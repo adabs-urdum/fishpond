@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     biteAnimtion = e => {
-      this.fish.bite.play();
+      this.fish.jaw.play();
     };
 
     preloadReady = () => {
@@ -153,6 +153,15 @@ document.addEventListener("DOMContentLoaded", function() {
           "./dist/img/fish/main/mainCaudalMediumSmall.png"
         )
         .add("mainJawLarge", "./dist/img/fish/main/mainJawLarge.png")
+        .add("mainJawSmall", "./dist/img/fish/main/mainJawSmall.png")
+        .add(
+          "mainJawMediumSmall",
+          "./dist/img/fish/main/mainJawMediumSmall.png"
+        )
+        .add(
+          "mainJawMediumLarge",
+          "./dist/img/fish/main/mainJawMediumLarge.png"
+        )
         .add("mainCaudalSmall", "./dist/img/fish/main/mainCaudalSmall.png")
         .add("fishMainDorsalFin", "./dist/img/fish/main/dorsalFin.svg")
         .add("fishMainAfterFin", "./dist/img/fish/main/afterFin.svg")
