@@ -104,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     preloadReady = () => {
+      const tint = 0xe8fbff;
       this.fish = new Fish(setup);
 
       this.ticker = new PIXI.Ticker();
@@ -123,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
         setup.renderer.height
       );
       this.belowGround.endFill();
+      this.belowGround.tint = tint;
       setup.environment.addChildAt(this.belowGround, 0);
 
       const clouds2Texture = setup.loader.resources[
@@ -134,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
         450
       );
       this.clouds2.y = window.innerHeight - this.clouds2.height;
+      this.clouds2.tint = tint;
       setup.environment.addChildAt(this.clouds2, 0);
 
       const clouds1Texture = setup.loader.resources[
@@ -145,6 +148,7 @@ document.addEventListener("DOMContentLoaded", function() {
         300
       );
       this.clouds1.y = window.innerHeight - this.clouds1.height;
+      this.clouds1.tint = tint;
       setup.environment.addChildAt(this.clouds1, 1);
 
       const sandTexture = setup.loader.resources[
@@ -156,6 +160,7 @@ document.addEventListener("DOMContentLoaded", function() {
         128
       );
       this.sand.y = window.innerHeight - this.sand.height;
+      this.sand.tint = tint;
       setup.environment.addChildAt(this.sand, 2);
 
       setup.stage.addChildAt(setup.environment, 0);

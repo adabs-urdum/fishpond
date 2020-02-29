@@ -12,10 +12,10 @@ class Fish {
       y: 1
     };
     fish.maxSpeeds = {
-      1: 3,
-      2: 8,
-      3: 12,
-      4: 18
+      1: 2,
+      2: 4,
+      3: 7,
+      4: 10
     };
     fish.speed = fish.maxSpeeds[fish.level];
     fish.maxSpeed = fish.maxSpeeds[fish.level];
