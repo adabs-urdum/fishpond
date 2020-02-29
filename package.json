@@ -39,7 +39,8 @@
     "package.json": "latest",
     "onchange": "latest",
     "esbuild-darwin-64": "latest",
-    "pixi.js": "5.2.1",
-    "webfontloader": "latest"
+    "pixi.js": "latest",
+    "webfontloader": "latest",
+    "pixi-plugin-bump": "latest"
   }
 }

@@ -6,8 +6,22 @@ class Fish {
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
     this.fish = fish;
-    fish.speed = 0;
     fish.level = 1;
+    fish.direction = {
+      x: 1,
+      y: 1
+    };
+    fish.maxSpeeds = {
+      1: 3,
+      2: 8,
+      3: 12,
+      4: 18
+    };
+    fish.speed = fish.maxSpeeds[fish.level];
+    fish.maxSpeed = fish.maxSpeeds[fish.level];
+    this.fish.speedRel = Math.round(
+      (this.fish.maxSpeed / 100) * this.fish.speed
+    );
 
     const fishMainBodyTexture = this.setup.loader.resources[
       "fishMainBody"
@@ -43,7 +57,10 @@ class Fish {
 
     fish.speed = 0;
     fish.interactive = true;
-    fish.click = this.levelUp;
+
+    if (setup.debug) {
+      fish.click = this.levelUp;
+    }
 
     this.setup.stage.addChildAt(fish, 0);
 
@@ -61,6 +78,8 @@ class Fish {
     } else {
       this.fish.level += 1;
     }
+
+    this.fish.maxSpeed = this.fish.maxSpeeds[this.fish.level];
 
     const caudalTextures = this.caudalTextures[this.fish.level - 1];
     this.caudal.texture = caudalTextures[0];
@@ -120,7 +139,10 @@ class Fish {
     const angleDeg = this.setup.getAngleBetweenPoints(p1, p2);
     this.fish.angle = angleDeg;
 
-    const direction = angleDeg > 90 || angleDeg < -90 ? "left" : "right";
+    this.fish.direction = {
+      x: angleDeg > 90 || angleDeg < -90 ? -1 : 1,
+      y: angleDeg > 0 ? 1 : -1
+    };
 
     if (angleDeg > 90 || angleDeg < -90) {
       this.fish.scale.y = -1;
@@ -136,6 +158,9 @@ class Fish {
     let speed = (100 / (this.setup.vmin * 50)) * distance;
     speed = speed > 100 ? 100 : Math.round(speed);
     this.fish.speed = speed;
+    this.fish.speedRel = Math.round(
+      (this.fish.maxSpeed / 100) * this.fish.speed
+    );
   };
 
   addFishMainAfter = fishRelativeWidth => {

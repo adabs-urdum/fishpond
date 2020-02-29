@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const debug = true;
   const setup = {
+    debug: debug,
+    offset: { x: 0, y: 0 },
     fontFamily: fontFamily,
     gameStarted: false,
     vmin:
@@ -26,6 +28,16 @@ document.addEventListener("DOMContentLoaded", function() {
     renderer: null,
     loader: null,
     gravity: 20,
+    getCollision: (a, b) => {
+      var ab = a.getBounds();
+      var bb = b.getBounds();
+      return (
+        ab.x + ab.width > bb.x &&
+        ab.x < bb.x + bb.width &&
+        ab.y + ab.height > bb.y &&
+        ab.y < bb.y + bb.height
+      );
+    },
     getAngleBetweenPoints: (p1, p2) => {
       return (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
     },
@@ -100,6 +112,54 @@ document.addEventListener("DOMContentLoaded", function() {
 
       this.ticker.add(this.test);
 
+      setup.environment = new PIXI.Container();
+
+      this.belowGround = new PIXI.Graphics();
+      this.belowGround.beginFill("0xffe0a4");
+      this.belowGround.drawRect(
+        0,
+        setup.renderer.height / 2 - 5,
+        setup.renderer.width,
+        setup.renderer.height
+      );
+      this.belowGround.endFill();
+      setup.environment.addChildAt(this.belowGround, 0);
+
+      const clouds2Texture = setup.loader.resources[
+        "backgroundClouds_2"
+      ].texture.clone();
+      this.clouds2 = new PIXI.TilingSprite(
+        clouds2Texture,
+        setup.renderer.screen.width,
+        450
+      );
+      this.clouds2.y = window.innerHeight - this.clouds2.height;
+      setup.environment.addChildAt(this.clouds2, 0);
+
+      const clouds1Texture = setup.loader.resources[
+        "backgroundClouds_1"
+      ].texture.clone();
+      this.clouds1 = new PIXI.TilingSprite(
+        clouds1Texture,
+        setup.renderer.screen.width,
+        300
+      );
+      this.clouds1.y = window.innerHeight - this.clouds1.height;
+      setup.environment.addChildAt(this.clouds1, 1);
+
+      const sandTexture = setup.loader.resources[
+        "backgroundSand"
+      ].texture.clone();
+      this.sand = new PIXI.TilingSprite(
+        sandTexture,
+        setup.renderer.screen.width,
+        128
+      );
+      this.sand.y = window.innerHeight - this.sand.height;
+      setup.environment.addChildAt(this.sand, 2);
+
+      setup.stage.addChildAt(setup.environment, 0);
+
       this.bindEvents();
     };
 
@@ -164,6 +224,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fishMainDorsalFin", "./dist/img/fish/main/dorsalFin.svg")
         .add("fishMainAfterFin", "./dist/img/fish/main/afterFin.svg")
         .add("backgroundSand", "./dist/img/background/sand.png")
+        .add("backgroundClouds_1", "./dist/img/background/bgClouds_1.png")
+        .add("backgroundClouds_2", "./dist/img/background/bgClouds_2.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
@@ -175,12 +237,41 @@ document.addEventListener("DOMContentLoaded", function() {
       setup.loader.onComplete.add(this.preloadReady); // called once when the queued resources all load.
     };
 
-    animate = () => {
+    animate = delta => {
       if (debug) {
         this.updateFpsText();
       }
 
       this.fish.render();
+
+      setup.offset.x +=
+        this.fish.fish.speedRel * delta * this.fish.fish.direction.x;
+
+      const collisionFishSand = setup.getCollision(this.sand, this.fish.fish);
+
+      if (!collisionFishSand || this.fish.fish.direction.y == -1) {
+        setup.offset.y +=
+          this.fish.fish.speedRel * delta * this.fish.fish.direction.y;
+        setup.environment.position.y = setup.offset.y * -1;
+        setup.environment.position.x = setup.offset.x * -1;
+        this.sand.position.x = setup.offset.x;
+        this.clouds1.position.x = setup.offset.x;
+        this.clouds2.position.x = setup.offset.x;
+        this.belowGround.position.x = setup.offset.x;
+      }
+
+      this.sand.tilePosition.x +=
+        this.fish.fish.speedRel * delta * this.fish.fish.direction.x * -1;
+
+      this.clouds1.tilePosition.x +=
+        ((this.fish.fish.speedRel * delta * this.fish.fish.direction.x) / 3) *
+        2 *
+        -1;
+
+      this.clouds2.tilePosition.x +=
+        ((this.fish.fish.speedRel * delta * this.fish.fish.direction.x) / 3) *
+        1 *
+        -1;
 
       setup.renderer.render(setup.stage);
     };
