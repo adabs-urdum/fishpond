@@ -130,9 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     preloadAssets = () => {
       setup.loader
-        .add("fishMainBody", "./dist/img/fish/main/body.svg")
-        .add("fishMainJaw", "./dist/img/fish/main/jaw.svg")
-        .add("fishMainCaudalFin", "./dist/img/fish/main/caudalFin.svg")
+        .add("fishMainBody", "./dist/img/fish/main/body.png")
         .add("mainPelvicLarge", "./dist/img/fish/main/mainPelvicLarge.png")
         .add(
           "mainPelvicMediumLarge",
@@ -165,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("mainCaudalSmall", "./dist/img/fish/main/mainCaudalSmall.png")
         .add("fishMainDorsalFin", "./dist/img/fish/main/dorsalFin.svg")
         .add("fishMainAfterFin", "./dist/img/fish/main/afterFin.svg")
+        .add("backgroundSand", "./dist/img/background/sand.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
