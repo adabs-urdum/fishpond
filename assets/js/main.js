@@ -5,6 +5,7 @@ import WebFont from "webfontloader";
 import * as PIXI from "pixi.js";
 import Fish from "./Characters/Fish.js";
 import Background from "./Environment/Background.js";
+import Splash from "./Environment/Splash.js";
 
 Array.prototype.getRandomValue = inputArray => {
   return inputArray[Math.floor(Math.random() * inputArray.length)];
@@ -85,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function() {
         transparent: true
       });
       setup.stage = new PIXI.Container();
-
       setup.loader = PIXI.Loader.shared;
+      setup.checkIsUnderWater = true;
       setup.loader = new PIXI.Loader();
       this.preloadAssets();
     }
@@ -111,17 +112,15 @@ document.addEventListener("DOMContentLoaded", function() {
       this.ticker = new PIXI.Ticker();
       setup.ticker = this.ticker;
       this.ticker.add(this.animate);
-      this.ticker.start();
-
-      this.ticker.add(this.test);
 
       setup.environment = new PIXI.Container();
-
-      this.background = new Background(setup);
+      setup.background = new Background(setup);
 
       setup.stage.addChildAt(setup.environment, 0);
 
       this.bindEvents();
+
+      this.ticker.start();
     };
 
     updateFpsText = () => {
@@ -184,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("bloodworm", "./dist/img/food/bloodworm.png")
         .add("bubble", "./dist/img/environment/bubble.png")
         .add("fern", "./dist/img/environment/fern.png")
+        .add("splash", "./dist/img/environment/splash.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
@@ -202,57 +202,72 @@ document.addEventListener("DOMContentLoaded", function() {
 
       this.fish.render();
 
+      // if fish is hitting ground
       setup.collisionFishSand = setup.getCollision(
-        this.background.sand,
+        setup.background.sand,
         this.fish.fish
       );
 
-      setup.isUnderWater = true;
-      if (this.fish.fish.direction.x == -1) {
-        setup.isUnderWater =
-          this.background.waterSurface.y <=
-          setup.offset.y +
-            setup.renderer.screen.height / 2 -
-            (this.fish.fish.height / 2) * this.fish.fish.direction.y;
-      } else {
-        setup.isUnderWater =
-          this.background.waterSurface.y <=
-          setup.offset.y +
-            setup.renderer.screen.height / 2 -
-            (this.fish.fish.height / 2) * this.fish.fish.direction.y * -1;
+      // if fish is under water
+      if (setup.checkIsUnderWater) {
+        setup.isUnderWater = true;
+        if (this.fish.fish.direction.x == -1) {
+          setup.isUnderWater =
+            setup.background.waterSurface.y <=
+            setup.offset.y +
+              setup.renderer.screen.height / 2 -
+              (this.fish.fish.height / 3) * 2 * this.fish.fish.direction.y;
+        } else {
+          setup.isUnderWater =
+            setup.background.waterSurface.y <=
+            setup.offset.y +
+              setup.renderer.screen.height / 2 -
+              (this.fish.fish.height / 3) * 2 * this.fish.fish.direction.y * -1;
+        }
       }
 
       if (
         (!setup.collisionFishSand || this.fish.fish.direction.y == -1) &&
-        setup.isUnderWater
+        setup.isUnderWater &&
+        setup.checkIsUnderWater
       ) {
         setup.offset.y +=
           this.fish.fish.speedsRel.y * delta * this.fish.fish.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
       }
 
+      if (!setup.isUnderWater) {
+        this.splash = new Splash(setup);
+        setup.checkIsUnderWater = false;
+        setup.isUnderWater = true;
+        setTimeout(() => {
+          setup.checkIsUnderWater = true;
+        }, 200);
+      }
+
       setup.offset.x +=
         this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x;
       setup.environment.position.x = setup.offset.x * -1;
 
-      this.background.waterSurface.tilePosition.x += delta * Math.random() * 10;
+      setup.background.waterSurface.tilePosition.x +=
+        delta * Math.random() * 10;
 
-      this.background.sand.tilePosition.x +=
+      setup.background.sand.tilePosition.x +=
         this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x * -1;
 
-      this.background.clouds1.tilePosition.x +=
+      setup.background.clouds1.tilePosition.x +=
         ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
           3) *
         2 *
         -1;
 
-      this.background.clouds2.tilePosition.x +=
+      setup.background.clouds2.tilePosition.x +=
         ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
           3) *
         1 *
         -1;
 
-      this.background.render(delta);
+      setup.background.render(delta);
 
       setup.renderer.render(setup.stage);
     };

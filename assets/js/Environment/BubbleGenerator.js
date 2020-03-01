@@ -7,7 +7,11 @@ class BubbleGenerator {
     this.bubbles = [];
     this.addBubble(), this.addBubble(), this.addBubble(), this.addBubble();
 
-    this.bubbleInterval = setInterval(this.addBubble, 2500);
+    this.bubbleInterval = setInterval(() => {
+      this.addBubble();
+      this.addBubble();
+      this.addBubble();
+    }, 2500);
   }
 
   addBubble = () => {
@@ -17,7 +21,6 @@ class BubbleGenerator {
       bubbleFrames.push(new PIXI.Rectangle(512 * i, 0, 512, 512));
     }
     bubbleTexture.frame = bubbleFrames[0];
-    const bubbleSprite = new PIXI.Sprite(bubbleTexture);
     const bubbleTextures = [];
     for (let i = 0; i < bubbleFrames.length; i++) {
       const texture = bubbleTexture.clone();

@@ -19,7 +19,7 @@ class FernGenerator {
 
     this.ferns = [];
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 30; i++) {
       this.ferns.push(this.addFern());
     }
   }
@@ -64,7 +64,8 @@ class FernGenerator {
     const petalsAmount = Math.ceil(Math.random() * 5 + 5);
     const fern = new PIXI.Container();
     // random whithin viewportX
-    fern.randomSpawnPointX = 20000 * Math.random() - 10000;
+    const range = 30000;
+    fern.randomSpawnPointX = range * Math.random() - range / 2;
     fern.position.x = fern.randomSpawnPointX;
 
     for (let i = 0; i < petalsAmount; i++) {
