@@ -6,7 +6,9 @@ class Fish {
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
     this.fish = fish;
-    fish.level = 1;
+    this.distance = 5;
+    this.relDistance = 5;
+    fish.level = 4;
     fish.direction = {
       x: 1,
       y: 1
@@ -17,11 +19,16 @@ class Fish {
       3: 7,
       4: 10
     };
+    fish.speeds = {
+      x: fish.maxSpeeds[fish.level],
+      y: fish.maxSpeeds[fish.level]
+    };
     fish.speed = fish.maxSpeeds[fish.level];
     fish.maxSpeed = fish.maxSpeeds[fish.level];
-    this.fish.speedRel = Math.round(
-      (this.fish.maxSpeed / 100) * this.fish.speed
-    );
+    fish.speedsRel = {
+      x: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.x),
+      y: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.y)
+    };
 
     const fishMainBodyTexture = this.setup.loader.resources[
       "fishMainBody"
@@ -55,7 +62,6 @@ class Fish {
     fish.x = window.innerWidth / 2;
     fish.y = window.innerHeight / 2;
 
-    fish.speed = 0;
     fish.interactive = true;
 
     if (setup.debug) {
@@ -154,13 +160,21 @@ class Fish {
   setFishSpeed = e => {
     const p1 = { x: this.fish.x, y: this.fish.y };
     const p2 = { x: e.clientX, y: e.clientY };
-    const distance = this.setup.getDistanceBetweenPoints(p1, p2);
-    let speed = (100 / (this.setup.vmin * 50)) * distance;
-    speed = speed > 100 ? 100 : Math.round(speed);
-    this.fish.speed = speed;
-    this.fish.speedRel = Math.round(
-      (this.fish.maxSpeed / 100) * this.fish.speed
-    );
+    this.distance = this.setup.getDistanceBetweenPoints(p1, p2);
+    this.relDistance = (100 / (this.setup.vmin * 50)) * this.distance;
+    this.relDistance = this.relDistance > 100 ? 100 : this.relDistance;
+
+    this.fish.speeds.x =
+      (100 / (this.setup.vmin * 50)) *
+      Math.abs(Math.abs(p2.x) - Math.abs(p1.x));
+    this.fish.speeds.y =
+      (100 / (this.setup.vmin * 50)) *
+      Math.abs(Math.abs(p2.y) - Math.abs(p1.y));
+
+    this.fish.speedsRel = {
+      x: (this.fish.maxSpeed / 100) * this.fish.speeds.x,
+      y: (this.fish.maxSpeed / 100) * this.fish.speeds.y
+    };
   };
 
   addFishMainAfter = fishRelativeWidth => {
@@ -487,16 +501,15 @@ class Fish {
   };
 
   render = () => {
-    if (this.fish.speed > 10) {
+    if (this.relDistance > 10) {
       this.caudal.play();
-      this.caudal.animationSpeed = 0.01 * this.fish.speed;
+      this.caudal.animationSpeed = 0.01 * this.relDistance;
     } else {
       this.caudal.stop();
     }
-
     this.pelvic.play();
-    this.pelvic.animationSpeed = 0.015 * this.fish.speed;
-    if (this.fish.speed < 3) {
+    this.pelvic.animationSpeed = 0.015 * this.relDistance;
+    if (this.relDistance < 3) {
       this.pelvic.stop();
     }
   };

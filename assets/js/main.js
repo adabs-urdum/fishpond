@@ -4,6 +4,7 @@ import "babel-polyfill";
 import WebFont from "webfontloader";
 import * as PIXI from "pixi.js";
 import Fish from "./Characters/Fish.js";
+import Background from "./Environment/Background.js";
 
 Array.prototype.getRandomValue = inputArray => {
   return inputArray[Math.floor(Math.random() * inputArray.length)];
@@ -15,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const debug = true;
   const setup = {
     debug: debug,
-    offset: { x: 0, y: 0 },
+    offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
     vmin:
@@ -104,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     preloadReady = () => {
-      const tint = 0xe8fbff;
       this.fish = new Fish(setup);
 
       this.ticker = new PIXI.Ticker();
@@ -115,64 +115,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
       setup.environment = new PIXI.Container();
 
-      this.belowGround = new PIXI.Graphics();
-      this.belowGround.beginFill("0xffe0a4");
-      this.belowGround.drawRect(
-        0,
-        setup.renderer.height / 2 - 5,
-        setup.renderer.width,
-        setup.renderer.height
-      );
-      this.belowGround.endFill();
-      this.belowGround.tint = tint;
-      setup.environment.addChildAt(this.belowGround, 0);
-
-      const clouds2Texture = setup.loader.resources[
-        "backgroundClouds_2"
-      ].texture.clone();
-      this.clouds2 = new PIXI.TilingSprite(
-        clouds2Texture,
-        setup.renderer.screen.width,
-        450
-      );
-      this.clouds2.y = window.innerHeight - this.clouds2.height;
-      this.clouds2.tint = tint;
-      setup.environment.addChildAt(this.clouds2, 0);
-
-      const clouds1Texture = setup.loader.resources[
-        "backgroundClouds_1"
-      ].texture.clone();
-      this.clouds1 = new PIXI.TilingSprite(
-        clouds1Texture,
-        setup.renderer.screen.width,
-        300
-      );
-      this.clouds1.y = window.innerHeight - this.clouds1.height;
-      this.clouds1.tint = tint;
-      setup.environment.addChildAt(this.clouds1, 1);
-
-      const sandTexture = setup.loader.resources[
-        "backgroundSand"
-      ].texture.clone();
-      this.sand = new PIXI.TilingSprite(
-        sandTexture,
-        setup.renderer.screen.width,
-        128
-      );
-      this.sand.y = window.innerHeight - this.sand.height;
-      this.sand.tint = tint;
-      setup.environment.addChildAt(this.sand, 2);
+      this.background = new Background(setup);
 
       setup.stage.addChildAt(setup.environment, 0);
 
       this.bindEvents();
-    };
-
-    test = () => {
-      // Its the same thing, but in milliseconds. If you want "300 pixels per second" you use "0.3 * elapsedMs" , and if you want "5 pixels per frame" you use "5 * deltaTime"
-      // if (this.fpsText) {
-      //   this.fpsText.x -= (window.innerWidth / 1000) * this.ticker.elapsedMS;
-      // }
     };
 
     updateFpsText = () => {
@@ -231,6 +178,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("backgroundSand", "./dist/img/background/sand.png")
         .add("backgroundClouds_1", "./dist/img/background/bgClouds_1.png")
         .add("backgroundClouds_2", "./dist/img/background/bgClouds_2.png")
+        .add("waterSurface", "./dist/img/background/waterSurface.png")
+        .add("bloodworm", "./dist/img/food/bloodworm.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
@@ -250,31 +199,59 @@ document.addEventListener("DOMContentLoaded", function() {
       this.fish.render();
 
       setup.offset.x +=
-        this.fish.fish.speedRel * delta * this.fish.fish.direction.x;
+        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x;
 
-      const collisionFishSand = setup.getCollision(this.sand, this.fish.fish);
+      const collisionFishSand = setup.getCollision(
+        this.background.sand,
+        this.fish.fish
+      );
 
-      if (!collisionFishSand || this.fish.fish.direction.y == -1) {
-        setup.offset.y +=
-          this.fish.fish.speedRel * delta * this.fish.fish.direction.y;
-        setup.environment.position.y = setup.offset.y * -1;
-        setup.environment.position.x = setup.offset.x * -1;
-        this.sand.position.x = setup.offset.x;
-        this.clouds1.position.x = setup.offset.x;
-        this.clouds2.position.x = setup.offset.x;
-        this.belowGround.position.x = setup.offset.x;
+      let isUnderWater;
+      if (this.fish.fish.direction.x == -1) {
+        isUnderWater =
+          this.background.waterSurface.y <=
+          setup.offset.y +
+            setup.renderer.screen.height / 2 -
+            (this.fish.fish.height / 2) * this.fish.fish.direction.y;
+      } else {
+        isUnderWater =
+          this.background.waterSurface.y <=
+          setup.offset.y +
+            setup.renderer.screen.height / 2 -
+            (this.fish.fish.height / 2) * this.fish.fish.direction.y * -1;
       }
 
-      this.sand.tilePosition.x +=
-        this.fish.fish.speedRel * delta * this.fish.fish.direction.x * -1;
+      if (
+        (!collisionFishSand || this.fish.fish.direction.y == -1) &&
+        (isUnderWater || this.fish.fish.direction.y == 1)
+      ) {
+        setup.offset.y +=
+          this.fish.fish.speedsRel.y * delta * this.fish.fish.direction.y;
+        setup.environment.position.y = setup.offset.y * -1;
+        setup.environment.position.x = setup.offset.x * -1;
+        this.background.sand.position.x = setup.offset.x;
+        this.background.clouds1.position.x = setup.offset.x;
+        this.background.clouds2.position.x = setup.offset.x;
+        this.background.belowGround.position.x = setup.offset.x;
+        this.background.sea.position.x = setup.offset.x;
+        this.background.sea2.position.x = setup.offset.x;
+        this.background.waterSurface.position.x = setup.offset.x;
+      }
 
-      this.clouds1.tilePosition.x +=
-        ((this.fish.fish.speedRel * delta * this.fish.fish.direction.x) / 3) *
+      this.background.waterSurface.tilePosition.x += delta * Math.random() * 10;
+
+      this.background.sand.tilePosition.x +=
+        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x * -1;
+
+      this.background.clouds1.tilePosition.x +=
+        ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
+          3) *
         2 *
         -1;
 
-      this.clouds2.tilePosition.x +=
-        ((this.fish.fish.speedRel * delta * this.fish.fish.direction.x) / 3) *
+      this.background.clouds2.tilePosition.x +=
+        ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
+          3) *
         1 *
         -1;
 
