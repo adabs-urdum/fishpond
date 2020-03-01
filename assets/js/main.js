@@ -106,8 +106,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     preloadReady = () => {
       this.fish = new Fish(setup);
+      setup.fish = this.fish;
 
       this.ticker = new PIXI.Ticker();
+      setup.ticker = this.ticker;
       this.ticker.add(this.animate);
       this.ticker.start();
 
@@ -180,6 +182,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("backgroundClouds_2", "./dist/img/background/bgClouds_2.png")
         .add("waterSurface", "./dist/img/background/waterSurface.png")
         .add("bloodworm", "./dist/img/food/bloodworm.png")
+        .add("bubble", "./dist/img/environment/bubble.png")
+        .add("fern", "./dist/img/environment/fern.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
@@ -198,23 +202,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
       this.fish.render();
 
-      setup.offset.x +=
-        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x;
-
-      const collisionFishSand = setup.getCollision(
+      setup.collisionFishSand = setup.getCollision(
         this.background.sand,
         this.fish.fish
       );
 
-      let isUnderWater;
+      setup.isUnderWater = true;
       if (this.fish.fish.direction.x == -1) {
-        isUnderWater =
+        setup.isUnderWater =
           this.background.waterSurface.y <=
           setup.offset.y +
             setup.renderer.screen.height / 2 -
             (this.fish.fish.height / 2) * this.fish.fish.direction.y;
       } else {
-        isUnderWater =
+        setup.isUnderWater =
           this.background.waterSurface.y <=
           setup.offset.y +
             setup.renderer.screen.height / 2 -
@@ -222,21 +223,17 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       if (
-        (!collisionFishSand || this.fish.fish.direction.y == -1) &&
-        (isUnderWater || this.fish.fish.direction.y == 1)
+        (!setup.collisionFishSand || this.fish.fish.direction.y == -1) &&
+        setup.isUnderWater
       ) {
         setup.offset.y +=
           this.fish.fish.speedsRel.y * delta * this.fish.fish.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
-        setup.environment.position.x = setup.offset.x * -1;
-        this.background.sand.position.x = setup.offset.x;
-        this.background.clouds1.position.x = setup.offset.x;
-        this.background.clouds2.position.x = setup.offset.x;
-        this.background.belowGround.position.x = setup.offset.x;
-        this.background.sea.position.x = setup.offset.x;
-        this.background.sea2.position.x = setup.offset.x;
-        this.background.waterSurface.position.x = setup.offset.x;
       }
+
+      setup.offset.x +=
+        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x;
+      setup.environment.position.x = setup.offset.x * -1;
 
       this.background.waterSurface.tilePosition.x += delta * Math.random() * 10;
 
@@ -254,6 +251,8 @@ document.addEventListener("DOMContentLoaded", function() {
           3) *
         1 *
         -1;
+
+      this.background.render(delta);
 
       setup.renderer.render(setup.stage);
     };
