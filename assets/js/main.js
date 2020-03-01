@@ -107,7 +107,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
       bloodworms.map(bloodworm => {
         const hit = setup.getCollision(this.fish.jaw, bloodworm);
-        console.log(hit);
+        if (hit) {
+          foodGenerator.addBloodSplatter();
+        }
       });
 
       this.fish.jaw.play();
@@ -192,6 +194,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("bubble", "./dist/img/environment/bubble.png")
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
+        .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.
