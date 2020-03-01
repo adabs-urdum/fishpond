@@ -278,6 +278,14 @@ document.addEventListener("DOMContentLoaded", function() {
         1 *
         -1;
 
+      // jump to other side of stage if reached limit
+      const limit = 15000;
+      if (setup.offset.x > limit + setup.renderer.screen.width) {
+        setup.offset.x *= -1;
+      } else if (setup.offset.x < -limit - setup.renderer.screen.width) {
+        setup.offset.x *= -1;
+      }
+
       setup.background.render(delta);
 
       setup.renderer.render(setup.stage);

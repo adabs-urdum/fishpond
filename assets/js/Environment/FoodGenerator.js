@@ -44,13 +44,13 @@ class FoodGenerator {
     const randomFactor = Math.random();
     bloodSplatter.scale.set(randomFactor * 0.4 + 0.2);
 
-    bloodSplatter.animationSpeed = 0.4;
+    bloodSplatter.animationSpeed = 0.3;
     bloodSplatter.loop = false;
 
     bloodSplatter.position.y =
-      this.setup.offset.y + this.setup.renderer.screen.width / 2;
+      this.setup.offset.y + this.setup.renderer.screen.height / 2;
     bloodSplatter.position.x =
-      this.setup.offset.x + this.setup.renderer.screen.height / 2;
+      this.setup.offset.x + this.setup.renderer.screen.width / 2;
 
     this.setup.environment.addChild(bloodSplatter);
 
