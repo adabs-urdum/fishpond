@@ -65,7 +65,7 @@ class Fish {
     fish.interactive = true;
 
     if (setup.debug) {
-      fish.click = this.levelUp;
+      // fish.click = this.levelUp;
     }
 
     this.setup.stage.addChildAt(fish, 0);

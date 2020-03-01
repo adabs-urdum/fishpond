@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import BubbleGenerator from "./BubbleGenerator.js";
 import FernGenerator from "./FernGenerator.js";
+import FoodGenerator from "./FoodGenerator.js";
 
 class Background {
   constructor(setup) {
@@ -99,6 +100,11 @@ class Background {
     this.bubbleGenerator = new BubbleGenerator(this.setup);
     zIndex += 1;
 
+    this.setup.foodContainer = new PIXI.Container();
+    this.setup.environment.addChildAt(this.setup.foodContainer, zIndex);
+    this.foodGenerator = new FoodGenerator(this.setup);
+    zIndex += 1;
+
     const clouds1Texture = this.setup.loader.resources[
       "backgroundClouds_1"
     ].texture.clone();
@@ -143,6 +149,7 @@ class Background {
     this.waterSurface.position.x = this.setup.offset.x;
     this.bubbleGenerator.render(delta, this.waterSurface);
     this.fernGenerator.render(delta);
+    this.foodGenerator.render(delta);
   };
 }
 

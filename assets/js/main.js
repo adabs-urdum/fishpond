@@ -102,6 +102,14 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     biteAnimtion = e => {
+      const foodGenerator = setup.background.foodGenerator;
+      const bloodworms = foodGenerator.bloodworms;
+
+      bloodworms.map(bloodworm => {
+        const hit = setup.getCollision(this.fish.jaw, bloodworm);
+        console.log(hit);
+      });
+
       this.fish.jaw.play();
     };
 
