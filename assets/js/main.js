@@ -94,21 +94,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
     bindEvents = () => {
       window.addEventListener("resize", this.onResize);
-      window.addEventListener("click", this.biteAnimtion);
+      window.addEventListener("click", this.bite);
     };
 
     onResize = () => {
       setup.debugLog("triggered onResize");
     };
 
-    biteAnimtion = e => {
+    bite = e => {
       const foodGenerator = setup.background.foodGenerator;
       const bloodworms = foodGenerator.bloodworms;
 
       bloodworms.map(bloodworm => {
-        const hit = setup.getCollision(this.fish.jaw, bloodworm);
+        const hit = setup.getCollision(this.fish.jaw, bloodworm.pixiObj);
         if (hit) {
-          foodGenerator.addBloodSplatter();
+          bloodworm.addBloodSplatter(bloodworm.pixiObj);
+          bloodworm.takeDamage(this.fish);
         }
       });
 
@@ -121,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       this.ticker = new PIXI.Ticker();
       setup.ticker = this.ticker;
-      this.ticker.add(this.animate);
+      this.ticker.add(this.render);
 
       setup.environment = new PIXI.Container();
       setup.background = new Background(setup);
@@ -206,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
       setup.loader.onComplete.add(this.preloadReady); // called once when the queued resources all load.
     };
 
-    animate = delta => {
+    render = delta => {
       if (debug) {
         this.updateFpsText();
       }

@@ -8,7 +8,13 @@ class Fish {
     this.fish = fish;
     this.distance = 5;
     this.relDistance = 5;
-    fish.level = 4;
+    this.life = 20;
+    this.stats = {
+      xp: 0,
+      level: 4,
+      attack: 5,
+      life: 20
+    };
     fish.direction = {
       x: 1,
       y: 1
@@ -20,11 +26,11 @@ class Fish {
       4: 10
     };
     fish.speeds = {
-      x: fish.maxSpeeds[fish.level],
-      y: fish.maxSpeeds[fish.level]
+      x: fish.maxSpeeds[this.stats.level],
+      y: fish.maxSpeeds[this.stats.level]
     };
-    fish.speed = fish.maxSpeeds[fish.level];
-    fish.maxSpeed = fish.maxSpeeds[fish.level];
+    fish.speed = fish.maxSpeeds[this.stats.level];
+    fish.maxSpeed = fish.maxSpeeds[this.stats.level];
     fish.speedsRel = {
       x: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.x),
       y: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.y)
@@ -79,25 +85,25 @@ class Fish {
   };
 
   levelUp = () => {
-    if (this.fish.level % 4 == 0) {
-      this.fish.level = 1;
+    if (this.stats.level % 4 == 0) {
+      this.stats.level = 1;
     } else {
-      this.fish.level += 1;
+      this.stats.level += 1;
     }
 
-    this.fish.maxSpeed = this.fish.maxSpeeds[this.fish.level];
+    this.fish.maxSpeed = this.fish.maxSpeeds[this.stats.level];
 
-    const caudalTextures = this.caudalTextures[this.fish.level - 1];
+    const caudalTextures = this.caudalTextures[this.stats.level - 1];
     this.caudal.texture = caudalTextures[0];
     this.caudal.textures = caudalTextures;
     this.caudal.play();
 
-    const pelvicTextures = this.pelvicTextures[this.fish.level - 1];
+    const pelvicTextures = this.pelvicTextures[this.stats.level - 1];
     this.pelvic.texture = pelvicTextures[0];
     this.pelvic.textures = pelvicTextures;
     this.pelvic.play();
 
-    const jawTextures = this.jawTextures[this.fish.level - 1];
+    const jawTextures = this.jawTextures[this.stats.level - 1];
     this.jaw.texture = jawTextures[0];
     this.jaw.textures = jawTextures;
 
@@ -105,28 +111,28 @@ class Fish {
   };
 
   setBodyPartPositions = () => {
-    if (this.fish.level == 1) {
+    if (this.stats.level == 1) {
       this.jaw.position.x = this.fishRelativeWidth * -14;
       this.jaw.position.y = this.fishRelativeWidth * -6;
       this.fishMainAfter.position.x = this.fishRelativeWidth * -86;
       this.fishMainAfter.position.y = this.fishRelativeWidth * 15;
       this.dorsal.position.x = this.fishRelativeWidth * -75;
       this.dorsal.position.y = this.fishRelativeWidth * -65;
-    } else if (this.fish.level == 2) {
+    } else if (this.stats.level == 2) {
       this.jaw.position.x = this.fishRelativeWidth * -22;
       this.jaw.position.y = this.fishRelativeWidth * -6;
       this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
       this.fishMainAfter.position.y = this.fishRelativeWidth * 20;
       this.dorsal.position.x = this.fishRelativeWidth * -75;
       this.dorsal.position.y = this.fishRelativeWidth * -72;
-    } else if (this.fish.level == 3) {
+    } else if (this.stats.level == 3) {
       this.jaw.position.x = this.fishRelativeWidth * -22;
       this.jaw.position.y = this.fishRelativeWidth * 3;
       this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
       this.fishMainAfter.position.y = this.fishRelativeWidth * 25;
       this.dorsal.position.x = this.fishRelativeWidth * -75;
       this.dorsal.position.y = this.fishRelativeWidth * -82;
-    } else if (this.fish.level == 4) {
+    } else if (this.stats.level == 4) {
       this.jaw.position.x = this.fishRelativeWidth * -25;
       this.jaw.position.y = this.fishRelativeWidth * 4;
       this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
@@ -290,7 +296,7 @@ class Fish {
     ];
 
     const pelvic = new PIXI.AnimatedSprite(
-      this.pelvicTextures[this.fish.level - 1]
+      this.pelvicTextures[this.stats.level - 1]
     );
     pelvic.position.x = 0;
     pelvic.position.y = fishRelativeWidth * 35;
@@ -388,7 +394,7 @@ class Fish {
     ];
 
     const caudal = new PIXI.AnimatedSprite(
-      this.caudalTextures[this.fish.level - 1]
+      this.caudalTextures[this.stats.level - 1]
     );
     caudal.position.x = fishRelativeWidth * -92;
     caudal.position.y = fishRelativeWidth * -5;
@@ -481,7 +487,7 @@ class Fish {
       jawLargeTextures
     ];
 
-    const jaw = new PIXI.AnimatedSprite(this.jawTextures[this.fish.level - 1]);
+    const jaw = new PIXI.AnimatedSprite(this.jawTextures[this.stats.level - 1]);
     jaw.position.x = fishRelativeWidth * -25;
     jaw.position.y = fishRelativeWidth * 4;
     jaw.scale.set(0.2);
