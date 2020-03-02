@@ -8,6 +8,7 @@ class Target {
     this.stats = {
       level: 4,
       attack: 5,
+      maxHealth: 20,
       health: 20,
       speed: 0,
       loot: {

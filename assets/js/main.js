@@ -196,6 +196,9 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
+        .add("statsBarLabel", "./dist/img/ui/statsBar/label.png")
+        .add("statsBarBody", "./dist/img/ui/statsBar/body.png")
+        .add("statsBarBar", "./dist/img/ui/statsBar/bar.png")
         .load();
 
       // throughout the process multiple signals can be dispatched.

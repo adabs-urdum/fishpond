@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import BubbleGenerator from "./BubbleGenerator.js";
 import FernGenerator from "./FernGenerator.js";
 import FoodGenerator from "./FoodGenerator.js";
+import UiGenerator from "../UI/UiGenerator.js";
 
 class Background {
   constructor(setup) {
@@ -136,6 +137,13 @@ class Background {
     this.setup.environment.addChildAt(this.setup.fernContainer, zIndex);
     this.fernGenerator = new FernGenerator(this.setup);
     zIndex += 1;
+
+    this.setup.uiContainer = new PIXI.Container();
+    this.setup.environment.addChildAt(this.setup.uiContainer, zIndex);
+    this.setup.uiContainer.x = 0;
+    this.setup.uiContainer.y = 0;
+    this.uiGenerator = new UiGenerator(this.setup);
+    zIndex += 1;
   }
 
   render = delta => {
@@ -150,6 +158,7 @@ class Background {
     this.bubbleGenerator.render(delta, this.waterSurface);
     this.fernGenerator.render(delta);
     this.foodGenerator.render(delta);
+    this.uiGenerator.render(delta);
   };
 }
 

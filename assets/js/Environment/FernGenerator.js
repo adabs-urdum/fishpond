@@ -33,9 +33,7 @@ class FernGenerator {
     fernSprite.scale.x = Math.round(Math.random())
       ? fernSprite.scale.x
       : fernSprite.scale.x * -1;
-    fernSprite.angle = Math.round(Math.random())
-      ? Math.random() * 45
-      : Math.random() * -45;
+    fernSprite.angle = Math.random() * 90 - 45;
     fernSprite.startingAngle = fernSprite.angle;
 
     switch (frameNumber) {
@@ -61,7 +59,7 @@ class FernGenerator {
   };
 
   addFern = () => {
-    const petalsAmount = Math.ceil(Math.random() * 5 + 5);
+    const petalsAmount = Math.round(Math.random() * 5 + 5);
     const fern = new PIXI.Container();
     // random whithin viewportX
     const range = 30000;

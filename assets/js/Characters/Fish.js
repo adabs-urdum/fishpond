@@ -8,32 +8,63 @@ class Fish {
     this.fish = fish;
     this.distance = 5;
     this.relDistance = 5;
-    this.life = 20;
-    this.stats = {
-      xp: 0,
-      level: 4,
-      attack: 5,
-      life: 20
+    const levels = {
+      1: {
+        relXp: 2,
+        maxSpeeds: {
+          x: 4,
+          y: 4
+        }
+      },
+      2: {
+        relXp: 2,
+        maxSpeeds: {
+          x: 6,
+          y: 6
+        }
+      },
+      3: {
+        relXp: 2,
+        maxSpeeds: {
+          x: 8,
+          y: 8
+        }
+      },
+      4: {
+        relXp: 2,
+        maxSpeeds: {
+          x: 10,
+          y: 10
+        }
+      }
     };
+    this.stats = {
+      // ignore first because key zero
+      xpSteps: [0, 4, 12, 18, 30, 50],
+      level: 1,
+      levels: levels,
+      xp: 0,
+      attack: 5,
+      life: 20,
+      maxLife: 20
+    };
+
+    this.setCurrentXp();
+
     fish.direction = {
       x: 1,
       y: 1
     };
-    fish.maxSpeeds = {
-      1: 2,
-      2: 4,
-      3: 7,
-      4: 10
-    };
+
+    const currentLevel = this.stats.levels[this.stats.level];
+
     fish.speeds = {
-      x: fish.maxSpeeds[this.stats.level],
-      y: fish.maxSpeeds[this.stats.level]
+      x: 0,
+      y: 0
     };
-    fish.speed = fish.maxSpeeds[this.stats.level];
-    fish.maxSpeed = fish.maxSpeeds[this.stats.level];
     fish.speedsRel = {
-      x: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.x),
-      y: Math.round((this.fish.maxSpeed / 100) * this.fish.speeds.y)
+      x: 0,
+      y: 0
     };
 
     const fishMainBodyTexture = this.setup.loader.resources[
@@ -79,19 +110,28 @@ class Fish {
     this.bindEvents();
   }
 
+  getPastLevelsXp = () => {
+    let pastLevelsXp = 0;
+    const pastLevels = Object.keys(this.stats.levels)
+      .slice(0, this.stats.level - 1)
+      .forEach(levelKey => {
+        const currentLevel = this.stats.levels[levelKey];
+        pastLevelsXp += currentLevel.relXp;
+      });
+    return pastLevelsXp;
+  };
+
+  setCurrentXp = () => {
+    this.stats.xp = this.getPastLevelsXp();
+  };
+
   bindEvents = () => {
     window.addEventListener("mousemove", this.setFishSpeed);
     window.addEventListener("mousemove", this.setFishAngle);
   };
 
   levelUp = () => {
-    if (this.stats.level % 4 == 0) {
-      this.stats.level = 1;
-    } else {
-      this.stats.level += 1;
-    }
-
-    this.fish.maxSpeed = this.fish.maxSpeeds[this.stats.level];
+    this.stats.level += 1;
 
     const caudalTextures = this.caudalTextures[this.stats.level - 1];
     this.caudal.texture = caudalTextures[0];
@@ -108,6 +148,8 @@ class Fish {
     this.jaw.textures = jawTextures;
 
     this.setBodyPartPositions();
+
+    this.setup.debugLog("LEVEL UP");
   };
 
   setBodyPartPositions = () => {
@@ -178,8 +220,12 @@ class Fish {
       Math.abs(Math.abs(p2.y) - Math.abs(p1.y));
 
     this.fish.speedsRel = {
-      x: (this.fish.maxSpeed / 100) * this.fish.speeds.x,
-      y: (this.fish.maxSpeed / 100) * this.fish.speeds.y
+      x:
+        (this.stats.levels[this.stats.level].maxSpeeds.x / 100) *
+        this.fish.speeds.x,
+      y:
+        (this.stats.levels[this.stats.level].maxSpeeds.y / 100) *
+        this.fish.speeds.y
     };
   };
 
@@ -517,6 +563,14 @@ class Fish {
     this.pelvic.animationSpeed = 0.015 * this.relDistance;
     if (this.relDistance < 3) {
       this.pelvic.stop();
+    }
+
+    const pastLevelsXp = this.getPastLevelsXp();
+    const currentLevel = this.stats.levels[this.stats.level];
+    if (this.stats.level < Object.keys(this.stats.levels).length) {
+      if (this.stats.xp >= currentLevel.relXp + pastLevelsXp) {
+        this.levelUp();
+      }
     }
   };
 }

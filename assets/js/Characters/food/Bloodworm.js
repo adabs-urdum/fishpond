@@ -7,7 +7,8 @@ class Bloodworm extends Target {
     this.setup = setup;
     setup.debugLog("new Bloodworm");
     this.pixiObj = this.addPixiObj();
-    this.stats.health = 10;
+    this.stats.maxHealth = 10;
+    this.stats.health = this.stats.maxHealth;
     this.stats.speed = Math.random() + 1;
     this.stats.attack = 0;
     this.stats.loot.xp = 2;
