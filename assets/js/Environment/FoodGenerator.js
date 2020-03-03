@@ -1,5 +1,6 @@
 import * as PIXI from "pixi.js";
 import BloodWorm from "./../Characters/food/Bloodworm.js";
+import Fish from "./../Characters/food/Fish.js";
 
 class FoodGenerator {
   constructor(setup) {
@@ -11,6 +12,9 @@ class FoodGenerator {
     setInterval(() => {
       this.bloodworms.push(new BloodWorm(this.setup));
     }, 2737);
+
+    this.fishes = [];
+    this.fishes.push(new Fish(this.setup));
   }
 
   render = delta => {

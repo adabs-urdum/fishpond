@@ -17,8 +17,8 @@ class Bloodworm extends Target {
   addPixiObj = () => {
     const bloodwormFrames = [];
     const bloodwormTexture = this.setup.loader.resources["bloodworm"].texture;
-    for (let i = 0; i < 4; i++) {
-      bloodwormFrames.push(new PIXI.Rectangle(659 * i, 0, 659, 440));
+    for (let i = 0; i < 5; i++) {
+      bloodwormFrames.push(new PIXI.Rectangle(0, 244 * i, 345, 244));
     }
     bloodwormTexture.frame = bloodwormFrames[0];
 
@@ -40,7 +40,7 @@ class Bloodworm extends Target {
     bloodworm.speed = Math.random() * 0.5 + 0.5;
 
     bloodworm.animationSpeed = 1;
-    bloodworm.scale.set(0.08);
+    bloodworm.scale.set(0.1);
     bloodworm.loop = true;
     bloodworm.tint = 0xe8fbff;
     bloodworm.animationSpeed = 0.2;

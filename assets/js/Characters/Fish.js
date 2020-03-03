@@ -67,32 +67,30 @@ class Fish {
       y: 0
     };
 
-    const fishMainBodyTexture = this.setup.loader.resources[
+    const bodyTexture = this.setup.loader.resources[
       "fishMainBody"
     ].texture.clone();
-    const fishMainBody = new PIXI.Sprite(fishMainBodyTexture);
-    fishMainBody.anchor.x = 0.5;
-    fishMainBody.anchor.y = 0.5;
-    const fishRelativeWidth = 100 / fishMainBody.width;
-    this.fishRelativeWidth = fishRelativeWidth;
-    fish.addChildAt(fishMainBody, 0);
+    const body = new PIXI.Sprite(bodyTexture);
+    body.anchor.x = 0.5;
+    body.anchor.y = 0.5;
+    fish.addChildAt(body, 0);
 
-    const fishMainJaw = this.addFishMainJaw(fishRelativeWidth);
-    fish.addChildAt(fishMainJaw, 1);
+    const jaw = this.addFishMainJaw();
+    fish.addChildAt(jaw, 1);
 
-    const fishMainCaudal = this.addFishMainCaudal(fishRelativeWidth);
-    this.fishMainCaudal = fishMainCaudal;
-    fish.addChildAt(fishMainCaudal, 2);
-    setup.bringToFront(fishMainCaudal);
+    const caudal = this.addCaudal();
+    this.caudal = caudal;
+    fish.addChildAt(caudal, 2);
+    setup.bringToFront(caudal);
 
-    this.addFishMainDorsal(fishRelativeWidth);
+    this.addDorsal();
     fish.addChildAt(this.dorsal, 0);
 
-    this.addFishMainPelvic(fishRelativeWidth);
+    this.addPelvic();
     fish.addChildAt(this.pelvic, 2);
 
-    this.addFishMainAfter(fishRelativeWidth);
-    fish.addChildAt(this.fishMainAfter, 0);
+    this.addAfter();
+    fish.addChildAt(this.after, 0);
 
     this.setBodyPartPositions();
 
@@ -159,45 +157,45 @@ class Fish {
     if (this.stats.level == 1) {
       this.jaw.position.x = -50;
       this.jaw.position.y = -20;
-      this.fishMainAfter.position.x = -320;
-      this.fishMainAfter.position.y = 50;
+      this.after.position.x = -320;
+      this.after.position.y = 50;
       this.dorsal.position.x = -240;
       this.dorsal.position.y = -240;
-      this.fishMainCaudal.position.x = -320;
-      this.fishMainCaudal.position.y = -12;
+      this.caudal.position.x = -320;
+      this.caudal.position.y = -12;
       this.pelvic.position.x = 0;
       this.pelvic.position.y = 160;
     } else if (this.stats.level == 2) {
       this.jaw.position.x = -85;
       this.jaw.position.y = -20;
-      this.fishMainAfter.position.x = -320;
-      this.fishMainAfter.position.y = 57;
+      this.after.position.x = -320;
+      this.after.position.y = 57;
       this.dorsal.position.x = -240;
       this.dorsal.position.y = -250;
-      this.fishMainCaudal.position.x = -320;
-      this.fishMainCaudal.position.y = 0;
+      this.caudal.position.x = -320;
+      this.caudal.position.y = 0;
       this.pelvic.position.x = 0;
       this.pelvic.position.y = 130;
     } else if (this.stats.level == 3) {
       this.jaw.position.x = -80;
       this.jaw.position.y = 15;
-      this.fishMainAfter.position.x = -320;
-      this.fishMainAfter.position.y = 65;
+      this.after.position.x = -320;
+      this.after.position.y = 65;
       this.dorsal.position.x = -240;
       this.dorsal.position.y = -265;
-      this.fishMainCaudal.position.x = -320;
-      this.fishMainCaudal.position.y = 0;
+      this.caudal.position.x = -320;
+      this.caudal.position.y = 0;
       this.pelvic.position.x = 0;
       this.pelvic.position.y = 130;
     } else if (this.stats.level == 4) {
       this.jaw.position.x = -90;
       this.jaw.position.y = 15;
-      this.fishMainAfter.position.x = -320;
-      this.fishMainAfter.position.y = 75;
+      this.after.position.x = -320;
+      this.after.position.y = 75;
       this.dorsal.position.x = -240;
       this.dorsal.position.y = -280;
-      this.fishMainCaudal.position.x = -320;
-      this.fishMainCaudal.position.y = -10;
+      this.caudal.position.x = -320;
+      this.caudal.position.y = -10;
       this.pelvic.position.x = 0;
       this.pelvic.position.y = 120;
     }
@@ -258,28 +256,28 @@ class Fish {
     };
   };
 
-  addFishMainAfter = fishRelativeWidth => {
-    const fishMainAfterTexture = this.setup.loader.resources[
+  addAfter = () => {
+    const afterTexture = this.setup.loader.resources[
       "fishMainAfterFin"
     ].texture.clone();
-    const fishMainAfter = new PIXI.Sprite(fishMainAfterTexture);
-    fishMainAfter.anchor.x = 0;
-    fishMainAfter.anchor.y = 0;
-    this.fishMainAfter = fishMainAfter;
-    return fishMainAfter;
+    const after = new PIXI.Sprite(afterTexture);
+    after.anchor.x = 0;
+    after.anchor.y = 0;
+    this.after = after;
+    return after;
   };
 
-  addFishMainDorsal = fishRelativeWidth => {
-    const fishMainDorsalTexture = this.setup.loader.resources[
+  addDorsal = () => {
+    const dorsalTexture = this.setup.loader.resources[
       "fishMainDorsalFin"
     ].texture.clone();
-    const fishMainDorsal = new PIXI.Sprite(fishMainDorsalTexture);
-    fishMainDorsal.anchor.x = 0;
-    fishMainDorsal.anchor.y = 0;
-    this.dorsal = fishMainDorsal;
+    const dorsal = new PIXI.Sprite(dorsalTexture);
+    dorsal.anchor.x = 0;
+    dorsal.anchor.y = 0;
+    this.dorsal = dorsal;
   };
 
-  addFishMainPelvic = fishRelativeWidth => {
+  addPelvic = () => {
     // load small animation
     const pelvicSmallFrames = [];
     const pelvicSmallTexture = this.setup.loader.resources["mainPelvicSmall"]
@@ -374,7 +372,7 @@ class Fish {
     this.pelvic = pelvic;
   };
 
-  addFishMainCaudal = fishRelativeWidth => {
+  addCaudal = () => {
     // load small animation
     const caudalSmallFrames = [];
     const caudalSmallTexture = this.setup.loader.resources["mainCaudalSmall"]
@@ -471,74 +469,68 @@ class Fish {
     return caudal;
   };
 
-  addFishMainJaw = fishRelativeWidth => {
+  addFishMainJaw = () => {
     // load small jaw animation
     const jawSmallFrames = [];
-    const fishMainJawSmallTexture = this.setup.loader.resources["mainJawSmall"]
-      .texture;
+    const jawSmallTexture = this.setup.loader.resources["mainJawSmall"].texture;
     for (let i = 0; i < 5; i++) {
       jawSmallFrames.push(new PIXI.Rectangle(250 * i, 0, 250, 240));
     }
-    fishMainJawSmallTexture.frame = jawSmallFrames[0];
-    const fishMainJawSmall = new PIXI.Sprite(fishMainJawSmallTexture);
+    jawSmallTexture.frame = jawSmallFrames[0];
+    const jawSmall = new PIXI.Sprite(jawSmallTexture);
     let i;
     const jawSmallTextures = [];
     for (i = 0; i < jawSmallFrames.length; i++) {
-      const texture = fishMainJawSmallTexture.clone();
+      const texture = jawSmallTexture.clone();
       texture.frame = jawSmallFrames[i];
       jawSmallTextures.push(texture);
     }
 
     // load medium small jaw animation
     const jawMediumSmallFrames = [];
-    const fishMainJawMediumSmallTexture = this.setup.loader.resources[
+    const jawMediumSmallTexture = this.setup.loader.resources[
       "mainJawMediumSmall"
     ].texture;
     for (let i = 0; i < 5; i++) {
       jawMediumSmallFrames.push(new PIXI.Rectangle(329 * i, 0, 329, 268));
     }
-    fishMainJawMediumSmallTexture.frame = jawMediumSmallFrames[0];
-    const fishMainJawMediumSmall = new PIXI.Sprite(
-      fishMainJawMediumSmallTexture
-    );
+    jawMediumSmallTexture.frame = jawMediumSmallFrames[0];
+    const jawMediumSmall = new PIXI.Sprite(jawMediumSmallTexture);
     const jawMediumSmallTextures = [];
     for (i = 0; i < jawMediumSmallFrames.length; i++) {
-      const texture = fishMainJawMediumSmallTexture.clone();
+      const texture = jawMediumSmallTexture.clone();
       texture.frame = jawMediumSmallFrames[i];
       jawMediumSmallTextures.push(texture);
     }
 
     // load medium large jaw animation
     const jawMediumLargeFrames = [];
-    const fishMainJawMediumLargeTexture = this.setup.loader.resources[
+    const jawMediumLargeTexture = this.setup.loader.resources[
       "mainJawMediumLarge"
     ].texture;
     for (let i = 0; i < 5; i++) {
       jawMediumLargeFrames.push(new PIXI.Rectangle(368 * i, 0, 368, 259));
     }
-    fishMainJawMediumLargeTexture.frame = jawMediumLargeFrames[0];
-    const fishMainJawMediumLarge = new PIXI.Sprite(
-      fishMainJawMediumLargeTexture
-    );
+    jawMediumLargeTexture.frame = jawMediumLargeFrames[0];
+    const jawMediumLarge = new PIXI.Sprite(jawMediumLargeTexture);
     const jawMediumLargeTextures = [];
     for (i = 0; i < jawMediumLargeFrames.length; i++) {
-      const texture = fishMainJawMediumLargeTexture.clone();
+      const texture = jawMediumLargeTexture.clone();
       texture.frame = jawMediumLargeFrames[i];
       jawMediumLargeTextures.push(texture);
     }
 
     // load large jaw animation
     const jawLargeFrames = [];
-    const fishMainJawLargeTexture = this.setup.loader.resources["mainJawLarge"]
-      .texture;
+    const jawLargeTexture = this.setup.loader.resources["mainJawLarge"].texture;
     for (let i = 0; i < 5; i++) {
       jawLargeFrames.push(new PIXI.Rectangle(477 * i, 0, 477, 310));
     }
-    fishMainJawLargeTexture.frame = jawLargeFrames[0];
-    const fishMainJawLarge = new PIXI.Sprite(fishMainJawLargeTexture);
+    jawLargeTexture.frame = jawLargeFrames[0];
+    const jawLarge = new PIXI.Sprite(jawLargeTexture);
     const jawLargeTextures = [];
     for (i = 0; i < jawLargeFrames.length; i++) {
-      const texture = fishMainJawLargeTexture.clone();
+      const texture = jawLargeTexture.clone();
       texture.frame = jawLargeFrames[i];
       jawLargeTextures.push(texture);
     }

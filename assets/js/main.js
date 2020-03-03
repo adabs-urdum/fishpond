@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     preloadAssets = () => {
       setup.loader
+        // Main Fish
         .add("fishMainBody", "./dist/img/fish/main/body.png")
         .add("mainPelvicLarge", "./dist/img/fish/main/mainPelvicLarge.png")
         .add(
@@ -190,15 +191,24 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("mainCaudalSmall", "./dist/img/fish/main/mainCaudalSmall.png")
         .add("fishMainDorsalFin", "./dist/img/fish/main/dorsalFin.svg")
         .add("fishMainAfterFin", "./dist/img/fish/main/afterFin.svg")
+        // environment
         .add("backgroundSand", "./dist/img/background/sand.png")
         .add("backgroundClouds_1", "./dist/img/background/bgClouds_1.png")
         .add("backgroundClouds_2", "./dist/img/background/bgClouds_2.png")
         .add("waterSurface", "./dist/img/background/waterSurface.png")
-        .add("bloodworm", "./dist/img/food/bloodworm.png")
         .add("bubble", "./dist/img/environment/bubble.png")
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
+        // targets
+        .add("bloodworm", "./dist/img/food/bloodworm.png")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
+        .add("fishTargetAfter", "./dist/img/fish/enemy/after.svg")
+        .add("fishTargetBody", "./dist/img/fish/enemy/body.svg")
+        .add("fishTargetCaudal", "./dist/img/fish/enemy/caudal.svg")
+        .add("fishTargetDorsal", "./dist/img/fish/enemy/dorsal.svg")
+        .add("fishTargetJaw", "./dist/img/fish/enemy/jaw.png")
+        .add("fishTargetPelvic", "./dist/img/fish/enemy/pelvic.svg")
+        // UI
         .add("statsBarLabel", "./dist/img/ui/statsBar/label.png")
         .add("statsBarBody", "./dist/img/ui/statsBar/body.png")
         .add("statsBarBar", "./dist/img/ui/statsBar/bar.png")
