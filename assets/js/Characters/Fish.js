@@ -6,32 +6,33 @@ class Fish {
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
     this.fish = fish;
+    this.fish.scale.set(0.15);
     this.distance = 5;
     this.relDistance = 5;
     const levels = {
       1: {
-        relXp: 2,
+        relXp: 4,
         maxSpeeds: {
           x: 4,
           y: 4
         }
       },
       2: {
-        relXp: 2,
+        relXp: 6,
         maxSpeeds: {
           x: 6,
           y: 6
         }
       },
       3: {
-        relXp: 2,
+        relXp: 8,
         maxSpeeds: {
           x: 8,
           y: 8
         }
       },
       4: {
-        relXp: 2,
+        relXp: 10,
         maxSpeeds: {
           x: 10,
           y: 10
@@ -40,7 +41,6 @@ class Fish {
     };
     this.stats = {
       // ignore first because key zero
-      xpSteps: [0, 4, 12, 18, 30, 50],
       level: 1,
       levels: levels,
       xp: 0,
@@ -73,7 +73,6 @@ class Fish {
     const fishMainBody = new PIXI.Sprite(fishMainBodyTexture);
     fishMainBody.anchor.x = 0.5;
     fishMainBody.anchor.y = 0.5;
-    fishMainBody.scale.set(0.2);
     const fishRelativeWidth = 100 / fishMainBody.width;
     this.fishRelativeWidth = fishRelativeWidth;
     fish.addChildAt(fishMainBody, 0);
@@ -82,6 +81,7 @@ class Fish {
     fish.addChildAt(fishMainJaw, 1);
 
     const fishMainCaudal = this.addFishMainCaudal(fishRelativeWidth);
+    this.fishMainCaudal = fishMainCaudal;
     fish.addChildAt(fishMainCaudal, 2);
     setup.bringToFront(fishMainCaudal);
 
@@ -154,33 +154,49 @@ class Fish {
 
   setBodyPartPositions = () => {
     if (this.stats.level == 1) {
-      this.jaw.position.x = this.fishRelativeWidth * -14;
-      this.jaw.position.y = this.fishRelativeWidth * -6;
-      this.fishMainAfter.position.x = this.fishRelativeWidth * -86;
-      this.fishMainAfter.position.y = this.fishRelativeWidth * 15;
-      this.dorsal.position.x = this.fishRelativeWidth * -75;
-      this.dorsal.position.y = this.fishRelativeWidth * -65;
+      this.jaw.position.x = -50;
+      this.jaw.position.y = -20;
+      this.fishMainAfter.position.x = -320;
+      this.fishMainAfter.position.y = 50;
+      this.dorsal.position.x = -240;
+      this.dorsal.position.y = -240;
+      this.fishMainCaudal.position.x = -320;
+      this.fishMainCaudal.position.y = -12;
+      this.pelvic.position.x = 0;
+      this.pelvic.position.y = 160;
     } else if (this.stats.level == 2) {
-      this.jaw.position.x = this.fishRelativeWidth * -22;
-      this.jaw.position.y = this.fishRelativeWidth * -6;
-      this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
-      this.fishMainAfter.position.y = this.fishRelativeWidth * 20;
-      this.dorsal.position.x = this.fishRelativeWidth * -75;
-      this.dorsal.position.y = this.fishRelativeWidth * -72;
+      this.jaw.position.x = -85;
+      this.jaw.position.y = -20;
+      this.fishMainAfter.position.x = -320;
+      this.fishMainAfter.position.y = 57;
+      this.dorsal.position.x = -240;
+      this.dorsal.position.y = -250;
+      this.fishMainCaudal.position.x = -320;
+      this.fishMainCaudal.position.y = 0;
+      this.pelvic.position.x = 0;
+      this.pelvic.position.y = 130;
     } else if (this.stats.level == 3) {
-      this.jaw.position.x = this.fishRelativeWidth * -22;
-      this.jaw.position.y = this.fishRelativeWidth * 3;
-      this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
-      this.fishMainAfter.position.y = this.fishRelativeWidth * 25;
-      this.dorsal.position.x = this.fishRelativeWidth * -75;
-      this.dorsal.position.y = this.fishRelativeWidth * -82;
+      this.jaw.position.x = -80;
+      this.jaw.position.y = 15;
+      this.fishMainAfter.position.x = -320;
+      this.fishMainAfter.position.y = 65;
+      this.dorsal.position.x = -240;
+      this.dorsal.position.y = -265;
+      this.fishMainCaudal.position.x = -320;
+      this.fishMainCaudal.position.y = 0;
+      this.pelvic.position.x = 0;
+      this.pelvic.position.y = 130;
     } else if (this.stats.level == 4) {
-      this.jaw.position.x = this.fishRelativeWidth * -25;
-      this.jaw.position.y = this.fishRelativeWidth * 4;
-      this.fishMainAfter.position.x = this.fishRelativeWidth * -90;
-      this.fishMainAfter.position.y = this.fishRelativeWidth * 30;
-      this.dorsal.position.x = this.fishRelativeWidth * -75;
-      this.dorsal.position.y = this.fishRelativeWidth * -90;
+      this.jaw.position.x = -90;
+      this.jaw.position.y = 15;
+      this.fishMainAfter.position.x = -320;
+      this.fishMainAfter.position.y = 75;
+      this.dorsal.position.x = -240;
+      this.dorsal.position.y = -280;
+      this.fishMainCaudal.position.x = -320;
+      this.fishMainCaudal.position.y = -10;
+      this.pelvic.position.x = 0;
+      this.pelvic.position.y = 120;
     }
   };
 
@@ -198,10 +214,20 @@ class Fish {
       y: angleDeg > 0 ? 1 : -1
     };
 
-    if (angleDeg > 90 || angleDeg < -90) {
-      this.fish.scale.y = -1;
+    if (angleDeg > 90 && angleDeg < 180) {
+      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
+    } else if (angleDeg < 90 && angleDeg > 0) {
+      if (this.fish.scale.y < 0) {
+        this.fish.scale.y *= -1;
+      }
+    } else if (angleDeg > -90 && angleDeg < 0) {
+      if (this.fish.scale.y < 0) {
+        this.fish.scale.y *= -1;
+      }
     } else {
-      this.fish.scale.y = 1;
+      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
+    }
+    if (angleDeg > 0 && angleDeg < 90) {
     }
   };
 
@@ -236,9 +262,6 @@ class Fish {
     const fishMainAfter = new PIXI.Sprite(fishMainAfterTexture);
     fishMainAfter.anchor.x = 0;
     fishMainAfter.anchor.y = 0;
-    fishMainAfter.position.x = fishRelativeWidth * -90;
-    fishMainAfter.position.y = fishRelativeWidth * 30;
-    fishMainAfter.scale.set(0.2);
     this.fishMainAfter = fishMainAfter;
     return fishMainAfter;
   };
@@ -250,9 +273,6 @@ class Fish {
     const fishMainDorsal = new PIXI.Sprite(fishMainDorsalTexture);
     fishMainDorsal.anchor.x = 0;
     fishMainDorsal.anchor.y = 0;
-    fishMainDorsal.position.x = fishRelativeWidth * -75;
-    fishMainDorsal.position.y = fishRelativeWidth * -90;
-    fishMainDorsal.scale.set(0.2);
     this.dorsal = fishMainDorsal;
   };
 
@@ -344,10 +364,7 @@ class Fish {
     const pelvic = new PIXI.AnimatedSprite(
       this.pelvicTextures[this.stats.level - 1]
     );
-    pelvic.position.x = 0;
-    pelvic.position.y = fishRelativeWidth * 35;
     pelvic.anchor.set(1, 0);
-    pelvic.scale.set(0.2);
     pelvic.animationSpeed = 1;
     pelvic.first = true;
     pelvic.play();
@@ -442,10 +459,7 @@ class Fish {
     const caudal = new PIXI.AnimatedSprite(
       this.caudalTextures[this.stats.level - 1]
     );
-    caudal.position.x = fishRelativeWidth * -92;
-    caudal.position.y = fishRelativeWidth * -5;
     caudal.anchor.set(1, 0.5);
-    caudal.scale.set(0.2);
     caudal.animationSpeed = 1;
     caudal.first = true;
     caudal.play();
@@ -534,9 +548,6 @@ class Fish {
     ];
 
     const jaw = new PIXI.AnimatedSprite(this.jawTextures[this.stats.level - 1]);
-    jaw.position.x = fishRelativeWidth * -25;
-    jaw.position.y = fishRelativeWidth * 4;
-    jaw.scale.set(0.2);
     jaw.animationSpeed = 1;
     jaw.first = true;
     jaw.onFrameChange = () => {

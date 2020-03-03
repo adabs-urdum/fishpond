@@ -105,11 +105,14 @@ document.addEventListener("DOMContentLoaded", function() {
       const foodGenerator = setup.background.foodGenerator;
       const bloodworms = foodGenerator.bloodworms;
 
-      bloodworms.map(bloodworm => {
+      bloodworms.map((bloodworm, bloodwormKey) => {
         const hit = setup.getCollision(this.fish.jaw, bloodworm.pixiObj);
         if (hit) {
           bloodworm.addBloodSplatter(bloodworm.pixiObj);
           bloodworm.takeDamage(this.fish);
+          if (bloodworm.stats.health <= 0) {
+            this.fish.stats.xp += bloodworm.stats.loot.xp;
+          }
         }
       });
 

@@ -19,7 +19,6 @@ class FoodGenerator {
 
       if (!alive) {
         this.bloodworms.splice(bloodwormKey, 1);
-        this.setup.fish.stats.xp += bloodworm.stats.loot.xp;
       }
     });
   };
