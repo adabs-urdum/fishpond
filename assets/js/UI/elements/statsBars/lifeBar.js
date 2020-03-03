@@ -15,15 +15,15 @@ class LifeBar extends StatsBar {
     this.positions = {
       label: {
         x: 20,
-        y: this.statsBarLabel.height * 2 + this.setup.BS * 50
+        y: this.setup.vmin * 20
       },
       body: {
         x: 45,
-        y: this.statsBarLabel.height * 2 + this.setup.BS * (45 + 45)
+        y: this.setup.vmin * 22.6
       },
       bar: {
         x: 70,
-        y: this.statsBarLabel.height * 2 + this.setup.BS * (86 + 86)
+        y: this.setup.vmin * 27.4
       }
     };
   }

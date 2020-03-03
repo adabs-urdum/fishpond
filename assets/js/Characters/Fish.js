@@ -149,6 +149,9 @@ class Fish {
 
     this.setBodyPartPositions();
 
+    this.fish.scale.x *= 1.05;
+    this.fish.scale.y *= 1.05;
+
     this.setup.debugLog("LEVEL UP");
   };
 
