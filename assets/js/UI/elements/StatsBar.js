@@ -11,12 +11,14 @@ class StatsBar {
   }
 
   addStatsBar = () => {
+    const scaleFactor = this.setup.vh / 30;
+
     const statsBarBodyTexture = this.setup.loader.resources[
       "statsBarBody"
     ].texture.clone();
     const statsBarBody = new PIXI.Sprite(statsBarBodyTexture);
     statsBarBody.tint = this.color;
-    statsBarBody.scale.set(this.setup.BS / 1.5);
+    statsBarBody.scale.set(scaleFactor);
     this.statsBarBody = statsBarBody;
     this.setup.uiContainer.addChild(statsBarBody);
     this.statsBarBody = statsBarBody;
@@ -26,7 +28,7 @@ class StatsBar {
     ].texture.clone();
     const statsBarBar = new PIXI.Sprite(statsBarBarTexture);
     statsBarBar.tint = this.color;
-    statsBarBar.scale.set(this.setup.BS / 1.5);
+    statsBarBar.scale.set(scaleFactor);
     statsBarBar.originalWidth = statsBarBar.width;
     statsBarBar.anchor.y = 0.5;
     this.statsBarBar = statsBarBar;
@@ -38,7 +40,7 @@ class StatsBar {
     ].texture.clone();
     const statsBarLabel = new PIXI.Sprite(statsBarLabelTexture);
     statsBarLabel.tint = this.color;
-    statsBarLabel.scale.set(this.setup.BS / 1.5);
+    statsBarLabel.scale.set(scaleFactor);
     this.statsBarLabel = statsBarLabel;
     this.setup.uiContainer.addChild(statsBarLabel);
     this.statsBarLabel = statsBarLabel;

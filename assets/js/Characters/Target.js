@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 class Target {
   constructor(setup) {
     this.setup = setup;
+    this.tint = 0xffffff;
     // this.setup.debugLog("new Target");
 
     this.stats = {
@@ -65,8 +66,10 @@ class Target {
     bloodSplatter.animationSpeed = 0.3;
     bloodSplatter.loop = false;
 
-    bloodSplatter.position.x = target.position.x;
-    bloodSplatter.position.y = target.position.y;
+    bloodSplatter.position.x = target.position.x + target.parent.position.x;
+    bloodSplatter.position.y = target.position.y + target.parent.position.y;
+
+    console.log(target);
 
     this.setup.environment.addChild(bloodSplatter);
 

@@ -13,16 +13,16 @@ class xpBar extends StatsBar {
     this.getCurrent();
     this.positions = {
       label: {
-        x: 20,
-        y: 20
+        x: this.setup.vh * 1,
+        y: this.setup.vh * 1
       },
       body: {
-        x: 45,
-        y: 45
+        x: this.setup.vh * 2,
+        y: this.setup.vh * 3.5
       },
       bar: {
-        x: 70,
-        y: 88
+        x: this.setup.vh * 4.4,
+        y: this.setup.vh * 7.5
       }
     };
   }

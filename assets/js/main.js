@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
         : window.innerWidth / 100,
+    vh: window.innerHeight / 100,
     windowRatio: window.innerWidth / window.innerHeight,
     designWidth: 1920,
     BS: window.innerWidth / 1920,
@@ -54,6 +55,10 @@ document.addEventListener("DOMContentLoaded", function() {
           parent.addChild(obj);
         }
       }
+    },
+    moveToPosition: (object, distance) => {
+      object.x = object.x + distance * Math.cos(object.rotation);
+      object.y = object.y + distance * Math.sin(object.rotation);
     },
     sendToBack: (obj, parent) => {
       const parentObj = parent || obj.parent || { children: false };
@@ -104,14 +109,17 @@ document.addEventListener("DOMContentLoaded", function() {
     bite = e => {
       const foodGenerator = setup.background.foodGenerator;
       const bloodworms = foodGenerator.bloodworms;
+      const fishes = foodGenerator.fishes;
 
-      bloodworms.map((bloodworm, bloodwormKey) => {
-        const hit = setup.getCollision(this.fish.jaw, bloodworm.pixiObj);
+      const targets = bloodworms.concat(fishes);
+
+      targets.forEach((target, targetKey) => {
+        const hit = setup.getCollision(this.fish.jaw, target.pixiObj);
         if (hit) {
-          bloodworm.addBloodSplatter(bloodworm.pixiObj);
-          bloodworm.takeDamage(this.fish);
-          if (bloodworm.stats.health <= 0) {
-            this.fish.stats.xp += bloodworm.stats.loot.xp;
+          target.addBloodSplatter(target.pixiObj);
+          target.takeDamage(this.fish);
+          if (target.stats.health <= 0) {
+            this.fish.stats.xp += target.stats.loot.xp;
           }
         }
       });

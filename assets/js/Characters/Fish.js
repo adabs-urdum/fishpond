@@ -45,8 +45,8 @@ class Fish {
       levels: levels,
       xp: 0,
       attack: 5,
-      life: 20,
-      maxLife: 20
+      health: 20,
+      maxHealth: 20
     };
 
     this.setCurrentXp();

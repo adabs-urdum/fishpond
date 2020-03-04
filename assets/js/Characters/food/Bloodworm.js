@@ -76,6 +76,7 @@ class Bloodworm extends Target {
           delta *
           this.stats.speed;
     } else {
+      this.pixiObj.destroy();
       return false;
     }
     return true;

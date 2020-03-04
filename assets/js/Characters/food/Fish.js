@@ -1,11 +1,14 @@
 import * as PIXI from "pixi.js";
+import Target from "../Target.js";
 
-class Fish {
+class Fish extends Target {
   constructor(setup) {
+    super(setup);
     this.setup = setup;
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
     this.fish = fish;
+    this.pixiObj = fish;
     this.fish.scale.set(0.12);
     this.distance = 5;
     this.relDistance = 5;
@@ -39,15 +42,14 @@ class Fish {
         }
       }
     };
-    this.stats = {
-      // ignore first because key zero
-      level: 1,
-      levels: levels,
-      xp: 0,
-      attack: 5,
-      life: 20,
-      maxLife: 20
-    };
+
+    this.stats.level = 1;
+    this.stats.levels = levels;
+    this.stats.xp = 0;
+    this.stats.attack = 5;
+    this.stats.health = 20;
+    this.stats.maxHealth = 20;
+    this.stats.loot.xp = 100;
 
     this.setCurrentXp();
 
@@ -97,8 +99,6 @@ class Fish {
     if (setup.debug) {
       // fish.click = this.levelUp;
     }
-
-    console.log(this.setup);
 
     this.setup.foodContainer.addChildAt(fish, 0);
 
@@ -151,7 +151,7 @@ class Fish {
   };
 
   setBodyPartPositions = () => {
-    this.jaw.position.x = 00;
+    this.jaw.position.x = 0;
     this.jaw.position.y = 40;
     this.after.position.x = -320;
     this.after.position.y = 90;
@@ -225,6 +225,7 @@ class Fish {
     const body = new PIXI.Sprite(bodyTexture);
     body.anchor.x = 0.5;
     body.anchor.y = 0.5;
+    body.tint = this.tint;
     this.body = body;
 
     const bodyFrames = [];
@@ -244,6 +245,7 @@ class Fish {
     const after = new PIXI.Sprite(afterTexture);
     after.anchor.x = 0;
     after.anchor.y = 0;
+    after.tint = this.tint;
     this.after = after;
     return after;
   };
@@ -255,6 +257,7 @@ class Fish {
     const dorsal = new PIXI.Sprite(dorsalTexture);
     dorsal.anchor.x = 0;
     dorsal.anchor.y = 0;
+    dorsal.tint = this.tint;
     this.dorsal = dorsal;
   };
 
@@ -282,6 +285,7 @@ class Fish {
     pelvic.animationSpeed = 1;
     pelvic.first = true;
     pelvic.play();
+    pelvic.tint = this.tint;
     this.pelvic = pelvic;
   };
 
@@ -307,6 +311,7 @@ class Fish {
     caudal.animationSpeed = 1;
     caudal.first = true;
     caudal.play();
+    caudal.tint = this.tint;
     this.caudal = caudal;
 
     return caudal;
@@ -339,6 +344,7 @@ class Fish {
       }
       jaw.first = false;
     };
+    jaw.tint = this.tint;
     this.jaw = jaw;
     return jaw;
   };

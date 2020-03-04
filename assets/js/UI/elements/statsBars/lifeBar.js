@@ -10,26 +10,26 @@ class LifeBar extends StatsBar {
     this.statsBarBody.tint = this.color;
     this.statsBarBar.tint = this.color;
     this.statsBarLabel.tint = this.color;
-    this.max = this.setup.fish.stats.maxLife;
+    this.max = this.setup.fish.stats.maxHealth;
     this.getCurrent();
     this.positions = {
       label: {
-        x: 20,
-        y: this.setup.vmin * 20
+        x: this.setup.vh * 1,
+        y: this.setup.vh * 15
       },
       body: {
-        x: 45,
-        y: this.setup.vmin * 22.6
+        x: this.setup.vh * 2,
+        y: this.setup.vh * 17.5
       },
       bar: {
-        x: 70,
-        y: this.setup.vmin * 27.4
+        x: this.setup.vh * 4.4,
+        y: this.setup.vh * 21.5
       }
     };
   }
 
   getCurrent = () => {
-    return (this.current = this.setup.fish.stats.life);
+    return (this.current = this.setup.fish.stats.health);
   };
 }
 
