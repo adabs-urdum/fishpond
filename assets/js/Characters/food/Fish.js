@@ -9,7 +9,7 @@ class Fish extends Target {
     const fish = new PIXI.Container();
     this.fish = fish;
     this.pixiObj = fish;
-    this.fish.scale.set(0.12);
+    this.fish.scale.set(0.2);
     this.distance = 5;
     this.relDistance = 5;
     const levels = {
@@ -49,7 +49,8 @@ class Fish extends Target {
     this.stats.attack = 5;
     this.stats.health = 20;
     this.stats.maxHealth = 20;
-    this.stats.loot.xp = 100;
+    this.stats.loot.xp = 5;
+    this.stats.speed = 10;
 
     this.setCurrentXp();
 
@@ -104,6 +105,10 @@ class Fish extends Target {
 
     this.bindEvents();
   }
+
+  takeDamage = attacker => {
+    this.stats.health -= attacker.stats.attack;
+  };
 
   getPastLevelsXp = () => {
     let pastLevelsXp = 0;
@@ -229,7 +234,7 @@ class Fish extends Target {
     this.body = body;
 
     const bodyFrames = [];
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 5; i++) {
       bodyFrames.push(new PIXI.Rectangle(0, 309 * i, 703, 309));
     }
     this.bodyFrames = bodyFrames;
@@ -349,26 +354,47 @@ class Fish extends Target {
     return jaw;
   };
 
-  render = () => {
-    if (this.relDistance > 10) {
-      this.caudal.play();
-      this.caudal.animationSpeed = 0.01 * this.relDistance;
-    } else {
-      this.caudal.stop();
-    }
-    this.pelvic.play();
-    this.pelvic.animationSpeed = 0.015 * this.relDistance;
-    if (this.relDistance < 3) {
-      this.pelvic.stop();
+  render = delta => {
+    // change body texture based on health
+    if (this.stats.health >= 0) {
+      const frameId =
+        this.bodyFrames.length - 1 - this.stats.health / this.bodyFrames.length;
+      this.body.texture.frame = this.bodyFrames[frameId];
     }
 
-    const pastLevelsXp = this.getPastLevelsXp();
-    const currentLevel = this.stats.levels[this.stats.level];
-    if (this.stats.level < Object.keys(this.stats.levels).length) {
-      if (this.stats.xp >= currentLevel.relXp + pastLevelsXp) {
-        this.levelUp();
+    if (this.stats.health > 0) {
+      if (this.relDistance > 10) {
+        this.caudal.play();
+        this.caudal.animationSpeed = 0.01 * this.relDistance;
+      } else {
+        this.caudal.stop();
+      }
+      this.pelvic.play();
+      this.pelvic.animationSpeed = 0.015 * this.relDistance;
+      if (this.relDistance < 3) {
+        this.pelvic.stop();
+      }
+
+      const pastLevelsXp = this.getPastLevelsXp();
+      const currentLevel = this.stats.levels[this.stats.level];
+      if (this.stats.level < Object.keys(this.stats.levels).length) {
+        if (this.stats.xp >= currentLevel.relXp + pastLevelsXp) {
+          this.levelUp();
+        }
+      }
+    } else {
+      this.caudal.stop();
+      this.pelvic.stop();
+      this.fish.position.y += 2 * delta;
+      this.fish.angle += 0.2 * delta;
+
+      if (this.setup.getCollision(this.pixiObj, this.setup.sand)) {
+        this.pixiObj.destroy();
+        return false;
       }
     }
+
+    return true;
   };
 }
 

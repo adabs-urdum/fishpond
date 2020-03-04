@@ -69,8 +69,6 @@ class Target {
     bloodSplatter.position.x = target.position.x + target.parent.position.x;
     bloodSplatter.position.y = target.position.y + target.parent.position.y;
 
-    console.log(target);
-
     this.setup.environment.addChild(bloodSplatter);
 
     bloodSplatter.onComplete = () => {

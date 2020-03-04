@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
       targets.forEach((target, targetKey) => {
         const hit = setup.getCollision(this.fish.jaw, target.pixiObj);
-        if (hit) {
+        if (hit && target.stats.health > 0) {
           target.addBloodSplatter(target.pixiObj);
           target.takeDamage(this.fish);
           if (target.stats.health <= 0) {
