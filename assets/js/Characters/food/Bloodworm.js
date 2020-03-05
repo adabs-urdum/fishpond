@@ -11,14 +11,14 @@ class Bloodworm extends Target {
     this.stats.health = this.stats.maxHealth;
     this.stats.speed = Math.random() + 1;
     this.stats.attack = 0;
-    this.stats.loot.xp = 2;
+    this.stats.loot.xp = 1;
   }
 
   addPixiObj = () => {
     const bloodwormFrames = [];
     const bloodwormTexture = this.setup.loader.resources["bloodworm"].texture;
     for (let i = 0; i < 5; i++) {
-      bloodwormFrames.push(new PIXI.Rectangle(0, 244 * i, 345, 244));
+      bloodwormFrames.push(new PIXI.Rectangle(0, 113.3 * i, 170, 113.3));
     }
     bloodwormTexture.frame = bloodwormFrames[0];
 
@@ -40,7 +40,7 @@ class Bloodworm extends Target {
     bloodworm.speed = Math.random() * 0.5 + 0.5;
 
     bloodworm.animationSpeed = 1;
-    bloodworm.scale.set(0.1);
+    bloodworm.scale.set(0.2);
     bloodworm.loop = true;
     bloodworm.tint = 0xe8fbff;
     bloodworm.animationSpeed = 0.2;
@@ -68,13 +68,8 @@ class Bloodworm extends Target {
 
     if (!this.setup.getCollision(this.setup.background.sand, this.pixiObj)) {
       this.pixiObj.position.y += 1;
-
       this.pixiObj.position.x =
-        this.randomSpawnPointX +
-        Math.sin(this.lastTime * (Math.PI / 2000)) *
-          100 *
-          delta *
-          this.stats.speed;
+        this.randomSpawnPointX + 100 * Math.sin(this.lastTime / 1000) * delta;
     } else {
       this.pixiObj.destroy();
       return false;

@@ -75,7 +75,7 @@ class BubbleGenerator {
         bubble.position.y -= bubble.speed * delta;
         bubble.position.x =
           bubble.randomSpawnPointX +
-          Math.sin(((this.lastTime / 50) * (Math.PI * 2)) / 100) * 35 * delta;
+          100 * Math.sin(this.lastTime / 1000) * delta;
       }
 
       const touchedSurface =

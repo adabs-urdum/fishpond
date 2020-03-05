@@ -7,9 +7,9 @@ class Fish extends Target {
     this.setup = setup;
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
-    this.fish = fish;
     this.pixiObj = fish;
-    this.fish.scale.set(0.2);
+    this.pixiObj = fish;
+    this.pixiObj.scale.set(0.1);
     this.distance = 5;
     this.relDistance = 5;
     const levels = {
@@ -47,8 +47,8 @@ class Fish extends Target {
     this.stats.levels = levels;
     this.stats.xp = 0;
     this.stats.attack = 5;
-    this.stats.health = 20;
-    this.stats.maxHealth = 20;
+    this.stats.maxHealth = 25;
+    this.stats.health = this.stats.maxHealth;
     this.stats.loot.xp = 5;
     this.stats.speed = 10;
 
@@ -106,6 +106,24 @@ class Fish extends Target {
     this.bindEvents();
   }
 
+  setInitialPosition = () => {
+    this.pixiObj.position = this.getNewPosition(this.pixiObj.position);
+    this.pixiObj.initialPosition = this.getNewPosition(this.pixiObj.position);
+  };
+
+  getNewPosition = oldPos => {
+    return {
+      x:
+        oldPos.x +
+        (Math.random() * this.setup.renderer.screen.width) / 2 -
+        this.setup.renderer.screen.width / 4,
+      y:
+        oldPos.y +
+        (Math.random() * this.setup.renderer.screen.height) / 2 -
+        this.setup.renderer.screen.height / 4
+    };
+  };
+
   takeDamage = attacker => {
     this.stats.health -= attacker.stats.attack;
   };
@@ -149,8 +167,8 @@ class Fish extends Target {
 
     this.setBodyPartPositions();
 
-    this.fish.scale.x *= 1.05;
-    this.fish.scale.y *= 1.05;
+    this.pixiObj.scale.x *= 1.05;
+    this.pixiObj.scale.y *= 1.05;
 
     this.setup.debugLog("LEVEL UP");
   };
@@ -168,58 +186,65 @@ class Fish extends Target {
     this.pelvic.position.y = 50;
   };
 
-  setFishAngle = e => {
-    const p1 = this.fish;
-    const p2 = {
-      x: e.clientX,
-      y: e.clientY
-    };
-    const angleDeg = this.setup.getAngleBetweenPoints(p1, p2);
-    this.fish.angle = angleDeg;
+  setFishAngle = (e, target) => {
+    const p1 = this.pixiObj;
+    let p2 = target;
 
-    this.fish.direction = {
+    if (!p2) {
+      p2 = {
+        x: e.clientX,
+        y: e.clientY
+      };
+    }
+
+    const angleDeg = this.setup.getAngleBetweenPoints(p1, p2);
+    this.pixiObj.angle = angleDeg;
+
+    this.pixiObj.direction = {
       x: angleDeg > 90 || angleDeg < -90 ? -1 : 1,
       y: angleDeg > 0 ? 1 : -1
     };
 
+    this.setSpriteDirection(angleDeg);
+  };
+
+  setSpriteDirection = angleDeg => {
     if (angleDeg > 90 && angleDeg < 180) {
-      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
     } else if (angleDeg < 90 && angleDeg > 0) {
-      if (this.fish.scale.y < 0) {
-        this.fish.scale.y *= -1;
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
       }
     } else if (angleDeg > -90 && angleDeg < 0) {
-      if (this.fish.scale.y < 0) {
-        this.fish.scale.y *= -1;
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
       }
     } else {
-      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
-    }
-    if (angleDeg > 0 && angleDeg < 90) {
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
     }
   };
 
   setFishSpeed = e => {
-    const p1 = { x: this.fish.x, y: this.fish.y };
+    const p1 = { x: this.pixiObj.x, y: this.pixiObj.y };
     const p2 = { x: e.clientX, y: e.clientY };
     this.distance = this.setup.getDistanceBetweenPoints(p1, p2);
     this.relDistance = (100 / (this.setup.vmin * 50)) * this.distance;
     this.relDistance = this.relDistance > 100 ? 100 : this.relDistance;
 
-    this.fish.speeds.x =
+    this.pixiObj.speeds.x =
       (100 / (this.setup.vmin * 50)) *
       Math.abs(Math.abs(p2.x) - Math.abs(p1.x));
-    this.fish.speeds.y =
+    this.pixiObj.speeds.y =
       (100 / (this.setup.vmin * 50)) *
       Math.abs(Math.abs(p2.y) - Math.abs(p1.y));
 
-    this.fish.speedsRel = {
+    this.pixiObj.speedsRel = {
       x:
         (this.stats.levels[this.stats.level].maxSpeeds.x / 100) *
-        this.fish.speeds.x,
+        this.pixiObj.speeds.x,
       y:
         (this.stats.levels[this.stats.level].maxSpeeds.y / 100) *
-        this.fish.speeds.y
+        this.pixiObj.speeds.y
     };
   };
 
@@ -278,14 +303,14 @@ class Fish extends Target {
 
     pelvicTexture.frame = pelvicFrames[0];
 
-    const caudalTextures = [];
+    const pelvicTextures = [];
     for (let i = 0; i < pelvicFrames.length; i++) {
       const texture = pelvicTexture.clone();
       texture.frame = pelvicFrames[i];
-      caudalTextures.push(texture);
+      pelvicTextures.push(texture);
     }
 
-    const pelvic = new PIXI.AnimatedSprite(caudalTextures);
+    const pelvic = new PIXI.AnimatedSprite(pelvicTextures);
     pelvic.anchor.set(1, 0);
     pelvic.animationSpeed = 1;
     pelvic.first = true;
@@ -314,7 +339,6 @@ class Fish extends Target {
     const caudal = new PIXI.AnimatedSprite(caudalTextures);
     caudal.anchor.set(1, 0.5);
     caudal.animationSpeed = 1;
-    caudal.first = true;
     caudal.play();
     caudal.tint = this.tint;
     this.caudal = caudal;
@@ -355,38 +379,24 @@ class Fish extends Target {
   };
 
   render = delta => {
+    const step = this.stats.maxHealth / (this.bodyFrames.length - 1);
+    const frameId = Math.round(
+      this.bodyFrames.length - 1 - this.stats.health / step
+    );
+
     // change body texture based on health
     if (this.stats.health >= 0) {
-      const frameId =
-        this.bodyFrames.length - 1 - this.stats.health / this.bodyFrames.length;
       this.body.texture.frame = this.bodyFrames[frameId];
     }
 
     if (this.stats.health > 0) {
-      if (this.relDistance > 10) {
-        this.caudal.play();
-        this.caudal.animationSpeed = 0.01 * this.relDistance;
-      } else {
-        this.caudal.stop();
-      }
-      this.pelvic.play();
-      this.pelvic.animationSpeed = 0.015 * this.relDistance;
-      if (this.relDistance < 3) {
-        this.pelvic.stop();
-      }
-
-      const pastLevelsXp = this.getPastLevelsXp();
-      const currentLevel = this.stats.levels[this.stats.level];
-      if (this.stats.level < Object.keys(this.stats.levels).length) {
-        if (this.stats.xp >= currentLevel.relXp + pastLevelsXp) {
-          this.levelUp();
-        }
-      }
+      this.pixiObj.y = 100 * Math.sin(this.pixiObj.initialPosition.y);
+      this.pixiObj.initialPosition.y += 0.01;
     } else {
       this.caudal.stop();
       this.pelvic.stop();
-      this.fish.position.y += 2 * delta;
-      this.fish.angle += 0.2 * delta;
+      this.pixiObj.position.y += 2 * delta;
+      this.pixiObj.angle += 0.2 * delta;
 
       if (this.setup.getCollision(this.pixiObj, this.setup.sand)) {
         this.pixiObj.destroy();

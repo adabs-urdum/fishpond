@@ -87,13 +87,13 @@ class FernGenerator {
     ) {
       this.setup.ticker.remove(this.wigglePetal, this);
     } else {
-      petal.angle += this.setup.fish.fish.direction.x;
+      petal.angle += this.setup.fish.pixiObj.direction.x;
     }
   };
 
   returnPetalRotation = petal => {
     const fishPetalCollided = this.setup.getCollision(
-      this.setup.fish.fish,
+      this.setup.fish.pixiObj,
       petal
     );
 
@@ -113,13 +113,13 @@ class FernGenerator {
   render(delta) {
     this.ferns.map(fern => {
       const fishFernCollided = this.setup.getCollision(
-        this.setup.fish.fish,
+        this.setup.fish.pixiObj,
         fern
       );
       if (fishFernCollided) {
         fern.children.map(petal => {
           const fishPetalCollided = this.setup.getCollision(
-            this.setup.fish.fish,
+            this.setup.fish.pixiObj,
             petal
           );
           if (fishPetalCollided) {

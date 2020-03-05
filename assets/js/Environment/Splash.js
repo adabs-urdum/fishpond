@@ -26,9 +26,9 @@ class Splash {
     const splash = new PIXI.AnimatedSprite(splashTextures);
     splash.position.x = this.setup.renderer.screen.width / 2;
     splash.position.y =
-      this.setup.fish.fish.direction.x == 1
-        ? this.setup.fish.fish.y - this.setup.fish.fish.height / 3
-        : this.setup.fish.fish.y + this.setup.fish.fish.height / 3;
+      this.setup.fish.pixiObj.direction.x == 1
+        ? this.setup.fish.pixiObj.y - this.setup.fish.pixiObj.height / 3
+        : this.setup.fish.pixiObj.y + this.setup.fish.pixiObj.height / 3;
     splash.animationSpeed = 1;
     splash.scale.set(0.2, 0.11);
     splash.alpha = 0.7;

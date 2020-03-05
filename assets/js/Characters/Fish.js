@@ -5,8 +5,8 @@ class Fish {
     this.setup = setup;
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
-    this.fish = fish;
-    this.fish.scale.set(0.15);
+    this.pixiObj = fish;
+    this.pixiObj.scale.set(0.15);
     this.distance = 5;
     this.relDistance = 5;
     const levels = {
@@ -147,8 +147,8 @@ class Fish {
 
     this.setBodyPartPositions();
 
-    this.fish.scale.x *= 1.05;
-    this.fish.scale.y *= 1.05;
+    this.pixiObj.scale.x *= 1.05;
+    this.pixiObj.scale.y *= 1.05;
 
     this.setup.debugLog("LEVEL UP");
   };
@@ -202,57 +202,55 @@ class Fish {
   };
 
   setFishAngle = e => {
-    const p1 = this.fish;
+    const p1 = this.pixiObj;
     const p2 = {
       x: e.clientX,
       y: e.clientY
     };
     const angleDeg = this.setup.getAngleBetweenPoints(p1, p2);
-    this.fish.angle = angleDeg;
+    this.pixiObj.angle = angleDeg;
 
-    this.fish.direction = {
+    this.pixiObj.direction = {
       x: angleDeg > 90 || angleDeg < -90 ? -1 : 1,
       y: angleDeg > 0 ? 1 : -1
     };
 
-    if (angleDeg > 90 && angleDeg < 180) {
-      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
-    } else if (angleDeg < 90 && angleDeg > 0) {
-      if (this.fish.scale.y < 0) {
-        this.fish.scale.y *= -1;
+    if (angleDeg >= 90 && angleDeg <= 180) {
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
+    } else if (angleDeg <= 90 && angleDeg >= 0) {
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
       }
-    } else if (angleDeg > -90 && angleDeg < 0) {
-      if (this.fish.scale.y < 0) {
-        this.fish.scale.y *= -1;
+    } else if (angleDeg >= -90 && angleDeg <= 0) {
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
       }
     } else {
-      this.fish.scale.y = Math.abs(this.fish.scale.y) * -1;
-    }
-    if (angleDeg > 0 && angleDeg < 90) {
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
     }
   };
 
   setFishSpeed = e => {
-    const p1 = { x: this.fish.x, y: this.fish.y };
+    const p1 = { x: this.pixiObj.x, y: this.pixiObj.y };
     const p2 = { x: e.clientX, y: e.clientY };
     this.distance = this.setup.getDistanceBetweenPoints(p1, p2);
     this.relDistance = (100 / (this.setup.vmin * 50)) * this.distance;
     this.relDistance = this.relDistance > 100 ? 100 : this.relDistance;
 
-    this.fish.speeds.x =
+    this.pixiObj.speeds.x =
       (100 / (this.setup.vmin * 50)) *
       Math.abs(Math.abs(p2.x) - Math.abs(p1.x));
-    this.fish.speeds.y =
+    this.pixiObj.speeds.y =
       (100 / (this.setup.vmin * 50)) *
       Math.abs(Math.abs(p2.y) - Math.abs(p1.y));
 
-    this.fish.speedsRel = {
+    this.pixiObj.speedsRel = {
       x:
         (this.stats.levels[this.stats.level].maxSpeeds.x / 100) *
-        this.fish.speeds.x,
+        this.pixiObj.speeds.x,
       y:
         (this.stats.levels[this.stats.level].maxSpeeds.y / 100) *
-        this.fish.speeds.y
+        this.pixiObj.speeds.y
     };
   };
 

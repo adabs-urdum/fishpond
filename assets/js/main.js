@@ -31,6 +31,12 @@ document.addEventListener("DOMContentLoaded", function() {
     renderer: null,
     loader: null,
     gravity: 20,
+    getNewRandomPos: () => {
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight
+      };
+    },
     getCollision: (a, b) => {
       var ab = a.getBounds();
       var bb = b.getBounds();
@@ -44,6 +50,9 @@ document.addEventListener("DOMContentLoaded", function() {
     getAngleBetweenPoints: (p1, p2) => {
       return (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
     },
+    getRotationBetweenPoints: (p1, p2) => {
+      return Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    },
     getDistanceBetweenPoints: (p1, p2) => {
       return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
     },
@@ -56,9 +65,15 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       }
     },
-    moveToPosition: (object, distance) => {
-      object.x = object.x + distance * Math.cos(object.rotation);
-      object.y = object.y + distance * Math.sin(object.rotation);
+    moveToPosition: (object, distance, rotation, initSpeed) => {
+      let speed = initSpeed;
+      if (!speed) {
+        speed = 5;
+      }
+      speed /= 100;
+
+      object.x = object.x + distance * Math.cos(rotation) * speed;
+      object.y = object.y + distance * Math.sin(rotation) * speed;
     },
     sendToBack: (obj, parent) => {
       const parentObj = parent || obj.parent || { children: false };
@@ -109,7 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
     bite = e => {
       const foodGenerator = setup.background.foodGenerator;
       const bloodworms = foodGenerator.bloodworms;
-      const fishes = foodGenerator.fishes;
+      const fishes = [];
+
+      foodGenerator.schools.forEach(school => {
+        school.fishes.forEach(fish => {
+          fishes.push(fish);
+        });
+      });
 
       const targets = bloodworms.concat(fishes);
 
@@ -208,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
         // targets
-        .add("bloodworm", "./dist/img/food/bloodworm.png")
+        .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
         .add("fishTargetAfter", "./dist/img/fish/enemy/after.svg")
         .add("fishTargetBody", "./dist/img/fish/enemy/body.svg")
@@ -241,34 +262,39 @@ document.addEventListener("DOMContentLoaded", function() {
       // if fish is hitting ground
       setup.collisionFishSand = setup.getCollision(
         setup.background.sand,
-        this.fish.fish
+        this.fish.pixiObj
       );
 
       // if fish is under water
       if (setup.checkIsUnderWater) {
         setup.isUnderWater = true;
-        if (this.fish.fish.direction.x == -1) {
+        if (this.fish.pixiObj.direction.x == -1) {
           setup.isUnderWater =
             setup.background.waterSurface.y <=
             setup.offset.y +
               setup.renderer.screen.height / 2 -
-              (this.fish.fish.height / 3) * 2 * this.fish.fish.direction.y;
+              (this.fish.pixiObj.height / 3) *
+                2 *
+                this.fish.pixiObj.direction.y;
         } else {
           setup.isUnderWater =
             setup.background.waterSurface.y <=
             setup.offset.y +
               setup.renderer.screen.height / 2 -
-              (this.fish.fish.height / 3) * 2 * this.fish.fish.direction.y * -1;
+              (this.fish.pixiObj.height / 3) *
+                2 *
+                this.fish.pixiObj.direction.y *
+                -1;
         }
       }
 
       if (
-        (!setup.collisionFishSand || this.fish.fish.direction.y == -1) &&
+        (!setup.collisionFishSand || this.fish.pixiObj.direction.y == -1) &&
         setup.isUnderWater &&
         setup.checkIsUnderWater
       ) {
         setup.offset.y +=
-          this.fish.fish.speedsRel.y * delta * this.fish.fish.direction.y;
+          this.fish.pixiObj.speedsRel.y * delta * this.fish.pixiObj.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
       }
 
@@ -282,23 +308,30 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       setup.offset.x +=
-        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x;
+        this.fish.pixiObj.speedsRel.x * delta * this.fish.pixiObj.direction.x;
       setup.environment.position.x = setup.offset.x * -1;
 
       setup.background.waterSurface.tilePosition.x +=
         delta * Math.random() * 10;
 
       setup.background.sand.tilePosition.x +=
-        this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x * -1;
+        this.fish.pixiObj.speedsRel.x *
+        delta *
+        this.fish.pixiObj.direction.x *
+        -1;
 
       setup.background.clouds1.tilePosition.x +=
-        ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
+        ((this.fish.pixiObj.speedsRel.x *
+          delta *
+          this.fish.pixiObj.direction.x) /
           3) *
         2 *
         -1;
 
       setup.background.clouds2.tilePosition.x +=
-        ((this.fish.fish.speedsRel.x * delta * this.fish.fish.direction.x) /
+        ((this.fish.pixiObj.speedsRel.x *
+          delta *
+          this.fish.pixiObj.direction.x) /
           3) *
         1 *
         -1;

@@ -82,6 +82,9 @@ class Background {
     this.clouds2.tint = tint;
     this.setup.environment.addChildAt(this.clouds2, zIndex);
     zIndex += 1;
+    const blurFilter = new PIXI.filters.BlurFilter();
+    this.clouds2.filters = [blurFilter];
+    blurFilter.blur = 4;
 
     const waterSurfaceTexture = this.setup.loader.resources[
       "waterSurface"
@@ -94,11 +97,15 @@ class Background {
     this.waterSurface.y =
       0 - this.setup.renderer.screen.height - this.waterSurface.height;
     this.setup.environment.addChildAt(this.waterSurface, zIndex);
+    this.setup.waterSurface = this.waterSurface;
     zIndex += 1;
 
     this.setup.bubbleContainer = new PIXI.Container();
     this.setup.environment.addChildAt(this.setup.bubbleContainer, zIndex);
     this.bubbleGenerator = new BubbleGenerator(this.setup);
+    const blurFilterBubble = new PIXI.filters.BlurFilter();
+    this.setup.bubbleContainer.filters = [blurFilterBubble];
+    blurFilterBubble.blur = 2;
     zIndex += 1;
 
     this.setup.foodContainer = new PIXI.Container();
@@ -116,6 +123,9 @@ class Background {
     );
     this.clouds1.y = window.innerHeight - this.clouds1.height;
     this.clouds1.tint = tint;
+    const blurFilterClouds1 = new PIXI.filters.BlurFilter();
+    this.clouds1.filters = [blurFilterClouds1];
+    blurFilterClouds1.blur = 1;
     this.setup.environment.addChildAt(this.clouds1, zIndex);
     zIndex += 1;
 
