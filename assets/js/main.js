@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
+    stageWidthHalf: 15000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -31,10 +32,16 @@ document.addEventListener("DOMContentLoaded", function() {
     renderer: null,
     loader: null,
     gravity: 20,
-    getNewRandomPos: () => {
+    getNewRandomPos: boundaryInit => {
+      const boundary = boundaryInit
+        ? boundaryInit
+        : {
+            x: window.innerWidth,
+            y: window.innerHeight
+          };
       return {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight
+        x: Math.random() * boundary.x,
+        y: Math.random() * boundary.y
       };
     },
     getCollision: (a, b) => {
@@ -231,12 +238,14 @@ document.addEventListener("DOMContentLoaded", function() {
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
-        .add("fishTargetAfter", "./dist/img/fish/enemy/after.svg")
-        .add("fishTargetBody", "./dist/img/fish/enemy/body.svg")
-        .add("fishTargetCaudal", "./dist/img/fish/enemy/caudal.svg")
-        .add("fishTargetDorsal", "./dist/img/fish/enemy/dorsal.svg")
-        .add("fishTargetJaw", "./dist/img/fish/enemy/jaw.png")
-        .add("fishTargetPelvic", "./dist/img/fish/enemy/pelvic.svg")
+        .add("fishTargetAfter", "./dist/img/fish/enemy/1/after.svg")
+        .add("fishTargetBody", "./dist/img/fish/enemy/1/body.svg")
+        .add("fishTargetCaudal", "./dist/img/fish/enemy/1/caudal.svg")
+        .add("fishTargetDorsal", "./dist/img/fish/enemy/1/dorsal.svg")
+        .add("fishTargetJaw", "./dist/img/fish/enemy/1/jaw.png")
+        .add("fishTargetPelvic", "./dist/img/fish/enemy/1/pelvic.svg")
+        .add("fishTargetBody2", "./dist/img/fish/enemy/2/body.svg")
+        .add("fishTargetJaw2", "./dist/img/fish/enemy/2/jaw.png")
         // UI
         .add("statsBarLabel", "./dist/img/ui/statsBar/label.png")
         .add("statsBarBody", "./dist/img/ui/statsBar/body.png")

@@ -23,19 +23,6 @@ class Background {
     this.setup.environment.addChildAt(this.sky, zIndex);
     zIndex += 1;
 
-    this.belowGround = new PIXI.Graphics();
-    this.belowGround.beginFill("0xffe0a4");
-    this.belowGround.drawRect(
-      0,
-      this.setup.renderer.screen.height,
-      this.setup.renderer.screen.width,
-      this.setup.renderer.screen.height
-    );
-    this.belowGround.endFill();
-    this.belowGround.tint = tint;
-    this.setup.environment.addChildAt(this.belowGround, zIndex);
-    zIndex += 1;
-
     this.seaGraphics = new PIXI.Graphics();
     this.seaGraphics.beginFill("0xC4EAFF");
     this.seaGraphics.drawRect(
@@ -103,9 +90,6 @@ class Background {
     this.setup.bubbleContainer = new PIXI.Container();
     this.setup.environment.addChildAt(this.setup.bubbleContainer, zIndex);
     this.bubbleGenerator = new BubbleGenerator(this.setup);
-    const blurFilterBubble = new PIXI.filters.BlurFilter();
-    this.setup.bubbleContainer.filters = [blurFilterBubble];
-    blurFilterBubble.blur = 2;
     zIndex += 1;
 
     this.setup.foodContainer = new PIXI.Container();
@@ -143,16 +127,29 @@ class Background {
     this.setup.environment.addChildAt(this.sand, zIndex);
     zIndex += 1;
 
-    this.setup.fernContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.fernContainer, zIndex);
-    this.fernGenerator = new FernGenerator(this.setup);
-    zIndex += 1;
-
     this.setup.uiContainer = new PIXI.Container();
     this.setup.environment.addChildAt(this.setup.uiContainer, zIndex);
     this.setup.uiContainer.x = 0;
     this.setup.uiContainer.y = 0;
     this.uiGenerator = new UiGenerator(this.setup);
+    zIndex += 1;
+
+    this.belowGround = new PIXI.Graphics();
+    this.belowGround.beginFill("0xffe0a4");
+    this.belowGround.drawRect(
+      0,
+      this.setup.renderer.screen.height,
+      this.setup.renderer.screen.width,
+      this.setup.renderer.screen.height
+    );
+    this.belowGround.endFill();
+    this.belowGround.tint = tint;
+    this.setup.environment.addChildAt(this.belowGround, zIndex);
+    zIndex += 1;
+
+    this.setup.fernContainer = new PIXI.Container();
+    this.setup.environment.addChildAt(this.setup.fernContainer, zIndex);
+    this.fernGenerator = new FernGenerator(this.setup);
     zIndex += 1;
   }
 

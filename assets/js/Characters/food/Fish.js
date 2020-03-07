@@ -2,14 +2,15 @@ import * as PIXI from "pixi.js";
 import Target from "../Target.js";
 
 class Fish extends Target {
-  constructor(setup) {
+  constructor(setup, sizeFactor, bodyTextureName, jawTextureName) {
     super(setup);
+    this.bodyTextureName = bodyTextureName ? bodyTextureName : "fishTargetBody";
+    this.jawTextureName = jawTextureName ? jawTextureName : "fishTargetJaw";
     this.setup = setup;
     this.setup.debugLog("new Fish");
     const fish = new PIXI.Container();
     this.pixiObj = fish;
-    this.pixiObj = fish;
-    this.pixiObj.scale.set(0.1);
+    this.pixiObj.scale.set((Math.random() * sizeFactor) / 2 + sizeFactor / 2);
     this.distance = 5;
     this.relDistance = 5;
     const levels = {
@@ -47,10 +48,14 @@ class Fish extends Target {
     this.stats.levels = levels;
     this.stats.xp = 0;
     this.stats.attack = 5;
-    this.stats.maxHealth = 25;
+    this.stats.maxHealth = Math.round(
+      this.stats.maxHealth +
+        this.stats.maxHealth * Math.random() * sizeFactor * 20
+    );
     this.stats.health = this.stats.maxHealth;
+
     this.stats.loot.xp = 5;
-    this.stats.speed = 10;
+    this.stats.speed = Math.random() * 5 + 5;
 
     this.setCurrentXp();
 
@@ -73,7 +78,7 @@ class Fish extends Target {
     const body = this.addBody();
     fish.addChildAt(body, 0);
 
-    const jaw = this.addFishMainJaw();
+    const jaw = this.addJaw();
     fish.addChildAt(jaw, 1);
 
     const caudal = this.addCaudal();
@@ -101,8 +106,6 @@ class Fish extends Target {
       // fish.click = this.levelUp;
     }
 
-    this.setup.foodContainer.addChildAt(fish, 0);
-
     this.bindEvents();
   }
 
@@ -122,6 +125,34 @@ class Fish extends Target {
         (Math.random() * this.setup.renderer.screen.height) / 2 -
         this.setup.renderer.screen.height / 4
     };
+  };
+
+  animateRotation = (targetAngle, speed) => {
+    this.targetAngle = targetAngle;
+    this.turningSpeed = speed ? speed : 120;
+    setTimeout(() => {
+      this.setup.ticker.add(this.runAnimateRotation, this);
+    }, Math.random() * 500);
+    this.originAngle = this.pixiObj.angle;
+  };
+
+  runAnimateRotation = () => {
+    if (this.pixiObj) {
+      this.pixiObj.angle +=
+        (this.targetAngle - this.originAngle) / this.turningSpeed;
+
+      if (
+        this.pixiObj.angle < this.targetAngle + 3 &&
+        this.pixiObj.angle > this.targetAngle - 3
+      ) {
+        this.pixiObj.angle = this.targetAngle;
+        this.setup.ticker.remove(this.runAnimateRotation, this);
+        this.setSpriteDirection(this.pixiObj.angle);
+      }
+    } else {
+      this.setup.ticker.remove(this.runAnimateRotation, this);
+      this.setSpriteDirection(this.pixiObj.angle);
+    }
   };
 
   takeDamage = attacker => {
@@ -167,8 +198,8 @@ class Fish extends Target {
 
     this.setBodyPartPositions();
 
-    this.pixiObj.scale.x *= 1.05;
-    this.pixiObj.scale.y *= 1.05;
+    this.pixiObj.scale.x *= 1.1;
+    this.pixiObj.scale.y *= 1.1;
 
     this.setup.debugLog("LEVEL UP");
   };
@@ -205,21 +236,21 @@ class Fish extends Target {
       y: angleDeg > 0 ? 1 : -1
     };
 
-    this.setSpriteDirection(angleDeg);
+    this.setSpriteDirection((angleDeg * 180) / Math.PI);
   };
 
   setSpriteDirection = angleDeg => {
-    if (angleDeg > 90 && angleDeg < 180) {
+    if (angleDeg >= 90 && angleDeg <= 180) {
       this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
-    } else if (angleDeg < 90 && angleDeg > 0) {
+    } else if (angleDeg <= 90 && angleDeg >= 0) {
       if (this.pixiObj.scale.y < 0) {
         this.pixiObj.scale.y *= -1;
       }
-    } else if (angleDeg > -90 && angleDeg < 0) {
+    } else if (angleDeg >= -90 && angleDeg <= 0) {
       if (this.pixiObj.scale.y < 0) {
         this.pixiObj.scale.y *= -1;
       }
-    } else {
+    } else if (angleDeg <= -90) {
       this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
     }
   };
@@ -250,7 +281,7 @@ class Fish extends Target {
 
   addBody = () => {
     const bodyTexture = this.setup.loader.resources[
-      "fishTargetBody"
+      this.bodyTextureName
     ].texture.clone();
     const body = new PIXI.Sprite(bodyTexture);
     body.anchor.x = 0.5;
@@ -346,10 +377,10 @@ class Fish extends Target {
     return caudal;
   };
 
-  addFishMainJaw = () => {
+  addJaw = () => {
     // load small jaw animation
     const jawFrames = [];
-    const jawTexture = this.setup.loader.resources["fishTargetJaw"].texture;
+    const jawTexture = this.setup.loader.resources[this.jawTextureName].texture;
     for (let i = 0; i < 5; i++) {
       jawFrames.push(new PIXI.Rectangle(351 * i, 0, 351, 220));
     }
@@ -378,10 +409,32 @@ class Fish extends Target {
     return jaw;
   };
 
+  decay = () => {
+    this.jaw.alpha -= 0.015;
+    this.jaw.position.x += 1;
+    this.jaw.position.y += 1;
+
+    this.pelvic.alpha -= 0.015;
+    this.pelvic.position.x += 0.5;
+    this.pelvic.position.y += 1;
+
+    this.after.alpha -= 0.015;
+    this.after.position.x -= 0.5;
+    this.after.position.y += 1;
+
+    this.dorsal.alpha -= 0.015;
+    this.dorsal.position.x -= 1;
+    this.dorsal.position.y -= 1;
+
+    this.caudal.alpha -= 0.015;
+    this.caudal.position.x -= 1;
+    // this.caudal.position.y -= 1;
+  };
+
   render = delta => {
-    const step = this.stats.maxHealth / (this.bodyFrames.length - 1);
+    const step = this.stats.maxHealth / (this.bodyFrames.length - 2);
     const frameId = Math.round(
-      this.bodyFrames.length - 1 - this.stats.health / step
+      this.bodyFrames.length - 2 - this.stats.health / step
     );
 
     // change body texture based on health
@@ -390,15 +443,22 @@ class Fish extends Target {
     }
 
     if (this.stats.health > 0) {
-      this.pixiObj.y = 100 * Math.sin(this.pixiObj.initialPosition.y);
+      this.pixiObj.position.x = 100 * Math.sin(this.pixiObj.initialPosition.x);
+      this.pixiObj.position.y = 100 * Math.sin(this.pixiObj.initialPosition.y);
       this.pixiObj.initialPosition.y += 0.01;
+      this.pixiObj.initialPosition.x += 0.005;
     } else {
+      this.body.texture.frame = this.bodyFrames[this.bodyFrames.length - 1];
+      this.decay();
       this.caudal.stop();
       this.pelvic.stop();
       this.pixiObj.position.y += 2 * delta;
       this.pixiObj.angle += 0.2 * delta;
 
-      if (this.setup.getCollision(this.pixiObj, this.setup.sand)) {
+      if (
+        this.pixiObj.position.y >=
+        this.setup.sand.position.y + this.setup.sand.height
+      ) {
         this.pixiObj.destroy();
         return false;
       }

@@ -15,28 +15,32 @@ class Fish {
         maxSpeeds: {
           x: 4,
           y: 4
-        }
+        },
+        attack: 4
       },
       2: {
         relXp: 6,
         maxSpeeds: {
           x: 6,
           y: 6
-        }
+        },
+        attack: 5
       },
       3: {
         relXp: 8,
         maxSpeeds: {
           x: 8,
           y: 8
-        }
+        },
+        attack: 6
       },
       4: {
         relXp: 10,
         maxSpeeds: {
           x: 10,
           y: 10
-        }
+        },
+        attack: 7
       }
     };
     this.stats = {
@@ -130,6 +134,7 @@ class Fish {
 
   levelUp = () => {
     this.stats.level += 1;
+    this.stats.attack = this.stats.levels[this.stats.level].attack;
 
     const caudalTextures = this.caudalTextures[this.stats.level - 1];
     this.caudal.texture = caudalTextures[0];
