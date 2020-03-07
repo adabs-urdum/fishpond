@@ -9,6 +9,7 @@ class FishSchool {
     this.fishes = [];
     this.deadFishes = [];
     this.initFishAmount = fishAmount ? fishAmount : 1;
+    this.rotateCooldown = false;
 
     this.setPosition();
     this.moveInterval = setTimeout(this.setNewPos, 3000 + Math.random() * 1000);
@@ -29,8 +30,8 @@ class FishSchool {
 
   setNewPos = () => {
     this.newPos = this.setup.getNewRandomPos({
-      x: this.setup.renderer.screen.width * 2,
-      y: this.setup.renderer.screen.height / 3
+      x: this.setup.renderer.screen.width * 1.5,
+      y: this.setup.renderer.screen.height / 4
     });
     this.newPos.y *= -1;
 
@@ -112,10 +113,49 @@ class FishSchool {
   };
 
   render = delta => {
+    if (
+      this.setup.offset.x +
+        this.setup.renderer.width -
+        this.setup.renderer.width / 2 >
+        this.pixiObj.position.x &&
+      this.setup.offset.x - this.setup.renderer.width / 2 <
+        this.pixiObj.position.x
+    ) {
+      const offsetDistance = {
+        x: this.pixiObj.position.x - this.setup.offset.x,
+        y: this.pixiObj.position.y - this.setup.offset.y
+      };
+      const distance = this.setup.getDistanceBetweenPoints(
+        this.setup.fish.pixiObj.position,
+        offsetDistance
+      );
+
+      if (distance <= 250) {
+        if (!this.rotateCooldown) {
+          let runContinue = true;
+          this.rotateCooldown = true;
+          this.fishes.forEach(fish => {
+            this.setup.ticker.remove(fish.runAnimateRotation, fish);
+            if (fish.stats.health > 0 && fish.pixiObj && fish.targetAngle) {
+              fish.pixiObj.angle = fish.targetAngle;
+            } else {
+              runContinue = false;
+            }
+          });
+          if (runContinue) {
+            this.setNewPos();
+            setTimeout(() => {
+              this.rotateCooldown = false;
+            }, 1500);
+          }
+        }
+      }
+    }
     this.fishes.forEach((fish, fishKey) => {
       if (fish.pixiObj && fish.pixiObj.angle != "undefined") {
         const alive = fish.render(delta);
         if (!alive) {
+          this.setup.ticker.remove(fish.runAnimateRotation, fish);
           this.fishes.splice(fishKey, 1);
         }
       }
@@ -124,6 +164,7 @@ class FishSchool {
       if (fish.pixiObj && fish.pixiObj.angle != "undefined") {
         const alive = fish.render(delta);
         if (!alive) {
+          this.setup.ticker.remove(fish.runAnimateRotation, fish);
           this.deadFishes.splice(fishKey, 1);
         }
       }

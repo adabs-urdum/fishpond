@@ -13,6 +13,7 @@ class Fish extends Target {
     this.pixiObj.scale.set((Math.random() * sizeFactor) / 2 + sizeFactor / 2);
     this.distance = 5;
     this.relDistance = 5;
+    this.rotateCooldown = false;
     const levels = {
       1: {
         relXp: 4,
