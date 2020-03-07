@@ -16,21 +16,25 @@ class FoodGenerator {
 
     this.schools = [];
 
-    let school = new FishSchool(
+    for (let i = 0; i < 3; i++) {
+      const factor = Math.round(Math.random());
+      const body = factor ? "fishTargetBody" : "fishTargetBody2";
+      const jaw = factor ? "fishTargetJaw" : "fishTargetJaw2";
+
+      this.addSchool(body, jaw);
+    }
+  }
+
+  addSchool = (body, jaw) => {
+    const school = new FishSchool(
       this.setup,
-      6,
-      "fishTargetBody",
-      "fishTargetJaw"
+      Math.round(Math.random() * 10),
+      body,
+      jaw
     );
     this.schools.push(school);
-
-    school = new FishSchool(this.setup, 9, "fishTargetBody2", "fishTargetJaw2");
-    this.schools.push(school);
-
-    this.schools.forEach(school => {
-      this.setup.foodContainer.addChild(school.pixiObj);
-    });
-  }
+    this.setup.foodContainer.addChild(school.pixiObj);
+  };
 
   render = delta => {
     this.bloodworms.map((bloodworm, bloodwormKey) => {
@@ -41,8 +45,22 @@ class FoodGenerator {
       }
     });
 
-    this.schools.forEach(school => {
-      school.render(delta);
+    if (this.schools.length < 4) {
+      const factor = Math.round(Math.random());
+      const body = factor ? "fishTargetBody" : "fishTargetBody2";
+      const jaw = factor ? "fishTargetJaw" : "fishTargetJaw2";
+
+      this.addSchool(body, jaw);
+    }
+
+    this.schools.forEach((school, schoolKey) => {
+      const fishes = school.fishes.concat(school.deadFishes);
+
+      if (fishes.length) {
+        school.render(delta);
+      } else {
+        this.schools.splice(schoolKey, 1);
+      }
     });
   };
 }
