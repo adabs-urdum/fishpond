@@ -62,8 +62,8 @@ class FernGenerator {
     const petalsAmount = Math.round(Math.random() * 5 + 5);
     const fern = new PIXI.Container();
     // random whithin viewportX
-    const range = 30000;
-    fern.randomSpawnPointX = range * Math.random() - range / 2;
+    const range = (this.setup.stageWidthHalf / 6) * 5;
+    fern.randomSpawnPointX = Math.random() * range * 3 - range;
     fern.position.x = fern.randomSpawnPointX;
 
     for (let i = 0; i < petalsAmount; i++) {

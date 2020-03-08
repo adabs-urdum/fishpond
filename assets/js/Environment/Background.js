@@ -3,14 +3,38 @@ import BubbleGenerator from "./BubbleGenerator.js";
 import FernGenerator from "./FernGenerator.js";
 import FoodGenerator from "./FoodGenerator.js";
 import UiGenerator from "../UI/UiGenerator.js";
+import LandGenerator from "./LandGenerator.js";
 
 class Background {
   constructor(setup) {
     this.setup = setup;
     this.setup.debugLog("new Background");
-    const tint = 0xe8fbff;
-    let zIndex = 0;
+    this.zIndex = 0;
+    this.tint = 0xe8fbff;
 
+    this.addSky();
+    this.addSea();
+    this.addClouds2();
+    this.addWaterSurface();
+    this.addBubbleContainer();
+    this.addLandContainer();
+    this.addFoodContainer();
+    this.addClouds1();
+    this.addSand();
+    this.addBelowGround();
+    this.addFernContainer();
+    this.addUiContainer();
+  }
+
+  addLandContainer = () => {
+    this.landGenerator = new LandGenerator(this.setup);
+
+    this.landGenerator.islands.forEach(island => {
+      island.position.y = this.waterSurface.y;
+    });
+  };
+
+  addSky = () => {
     this.sky = new PIXI.Graphics();
     this.sky.beginFill("0x3BD0FF");
     this.sky.drawRect(
@@ -20,9 +44,11 @@ class Background {
       this.setup.renderer.screen.height
     );
     this.sky.endFill();
-    this.setup.environment.addChildAt(this.sky, zIndex);
-    zIndex += 1;
+    this.setup.environment.addChildAt(this.sky, this.zIndex);
+    this.zIndex += 1;
+  };
 
+  addSea = () => {
     this.seaGraphics = new PIXI.Graphics();
     this.seaGraphics.beginFill("0xC4EAFF");
     this.seaGraphics.drawRect(
@@ -44,8 +70,8 @@ class Background {
     );
     this.sea.x = 0;
     this.sea.y = 0;
-    this.setup.environment.addChildAt(this.sea, zIndex);
-    zIndex += 1;
+    this.setup.environment.addChildAt(this.sea, this.zIndex);
+    this.zIndex += 1;
 
     this.sea2 = new PIXI.Sprite(
       this.seaTexture.clone(),
@@ -54,9 +80,11 @@ class Background {
     );
     this.sea2.x = 0;
     this.sea2.y = 0 - this.setup.renderer.screen.height;
-    this.setup.environment.addChildAt(this.sea2, zIndex);
-    zIndex += 1;
+    this.setup.environment.addChildAt(this.sea2, this.zIndex);
+    this.zIndex += 1;
+  };
 
+  addClouds2 = () => {
     const clouds2Texture = this.setup.loader.resources[
       "backgroundClouds_2"
     ].texture.clone();
@@ -66,13 +94,15 @@ class Background {
       450
     );
     this.clouds2.y = window.innerHeight - this.clouds2.height;
-    this.clouds2.tint = tint;
-    this.setup.environment.addChildAt(this.clouds2, zIndex);
-    zIndex += 1;
+    this.clouds2.tint = this.tint;
+    this.setup.environment.addChildAt(this.clouds2, this.zIndex);
+    this.zIndex += 1;
     const blurFilter = new PIXI.filters.BlurFilter();
     this.clouds2.filters = [blurFilter];
     blurFilter.blur = 4;
+  };
 
+  addWaterSurface = () => {
     const waterSurfaceTexture = this.setup.loader.resources[
       "waterSurface"
     ].texture.clone();
@@ -83,20 +113,26 @@ class Background {
     );
     this.waterSurface.y =
       0 - this.setup.renderer.screen.height - this.waterSurface.height;
-    this.setup.environment.addChildAt(this.waterSurface, zIndex);
+    this.setup.environment.addChildAt(this.waterSurface, this.zIndex);
     this.setup.waterSurface = this.waterSurface;
-    zIndex += 1;
+    this.zIndex += 1;
+  };
 
+  addBubbleContainer = () => {
     this.setup.bubbleContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.bubbleContainer, zIndex);
+    this.setup.environment.addChildAt(this.setup.bubbleContainer, 4);
     this.bubbleGenerator = new BubbleGenerator(this.setup);
-    zIndex += 1;
+    this.zIndex += 1;
+  };
 
+  addFoodContainer = () => {
     this.setup.foodContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.foodContainer, zIndex);
+    this.setup.environment.addChildAt(this.setup.foodContainer, this.zIndex);
     this.foodGenerator = new FoodGenerator(this.setup);
-    zIndex += 1;
+    this.zIndex += 1;
+  };
 
+  addClouds1 = () => {
     const clouds1Texture = this.setup.loader.resources[
       "backgroundClouds_1"
     ].texture.clone();
@@ -106,10 +142,12 @@ class Background {
       300
     );
     this.clouds1.y = window.innerHeight - this.clouds1.height;
-    this.clouds1.tint = tint;
-    this.setup.environment.addChildAt(this.clouds1, zIndex);
-    zIndex += 1;
+    this.clouds1.tint = this.tint;
+    this.setup.environment.addChildAt(this.clouds1, this.zIndex);
+    this.zIndex += 1;
+  };
 
+  addSand = () => {
     const sandTexture = this.setup.loader.resources[
       "backgroundSand"
     ].texture.clone();
@@ -118,19 +156,23 @@ class Background {
       this.setup.renderer.screen.width,
       128
     );
-    this.sand.y = window.innerHeight - this.sand.height;
-    this.sand.tint = tint;
+    this.sand.y = this.setup.renderer.screen.height - this.sand.height;
+    this.sand.tint = this.tint;
     this.setup.sand = this.sand;
-    this.setup.environment.addChildAt(this.sand, zIndex);
-    zIndex += 1;
+    this.setup.environment.addChildAt(this.sand, this.zIndex);
+    this.zIndex += 1;
+  };
 
+  addUiContainer = () => {
     this.setup.uiContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.uiContainer, zIndex);
+    this.setup.environment.addChildAt(this.setup.uiContainer, 12);
     this.setup.uiContainer.x = 0;
     this.setup.uiContainer.y = 0;
     this.uiGenerator = new UiGenerator(this.setup);
-    zIndex += 1;
+    this.zIndex += 1;
+  };
 
+  addBelowGround = () => {
     this.belowGround = new PIXI.Graphics();
     this.belowGround.beginFill("0xffe0a4");
     this.belowGround.drawRect(
@@ -140,15 +182,17 @@ class Background {
       this.setup.renderer.screen.height
     );
     this.belowGround.endFill();
-    this.belowGround.tint = tint;
-    this.setup.environment.addChildAt(this.belowGround, zIndex);
-    zIndex += 1;
+    this.belowGround.tint = this.tint;
+    this.setup.environment.addChildAt(this.belowGround, this.zIndex);
+    this.zIndex += 1;
+  };
 
+  addFernContainer = () => {
     this.setup.fernContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.fernContainer, zIndex);
+    this.setup.environment.addChildAt(this.setup.fernContainer, this.zIndex);
     this.fernGenerator = new FernGenerator(this.setup);
-    zIndex += 1;
-  }
+    this.zIndex += 1;
+  };
 
   render = delta => {
     this.sand.position.x = this.setup.offset.x;

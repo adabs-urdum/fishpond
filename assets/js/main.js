@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 5000,
+    stageWidthHalf: 1000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -53,6 +53,67 @@ document.addEventListener("DOMContentLoaded", function() {
         ab.y + ab.height > bb.y &&
         ab.y < bb.y + bb.height
       );
+    },
+    getCollidingSides: (a, b) => {
+      const collisions = {
+        top: false,
+        bottom: false,
+        left: false,
+        right: false
+      };
+
+      const ab = a.getBounds();
+      const bb = b.getBounds();
+
+      const aTop = ab.top;
+      const aBottom = ab.bottom;
+      const aLeft = ab.left;
+      const aRight = ab.right;
+
+      const bTop = bb.top;
+      const bBottom = bb.bottom;
+      const bLeft = bb.left;
+      const bRight = bb.right;
+
+      const b_collision = bBottom - aTop;
+      const t_collision = aBottom - bTop;
+      const l_collision = aRight - bLeft;
+      const r_collision = bRight - aLeft;
+
+      if (
+        t_collision < b_collision &&
+        t_collision < l_collision &&
+        t_collision < r_collision
+      ) {
+        //Top collision
+        collisions.top = true;
+      }
+      if (
+        b_collision < t_collision &&
+        b_collision < l_collision &&
+        b_collision < r_collision
+      ) {
+        //bottom collision
+        collisions.bottom = true;
+      }
+      if (
+        l_collision < r_collision &&
+        l_collision < t_collision &&
+        l_collision < b_collision
+      ) {
+        //Left collision
+        collisions.left = true;
+      }
+      if (
+        r_collision < l_collision &&
+        r_collision < t_collision &&
+        r_collision < b_collision
+      ) {
+        //Right collision
+        collisions.right = true;
+      }
+
+      return collisions;
     },
     getAngleBetweenPoints: (p1, p2) => {
       return (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
@@ -236,6 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
         .add("island", "./dist/img/environment/land/island.svg")
+        .add("pillar", "./dist/img/environment/land/pillar.svg")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
@@ -311,11 +373,61 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       }
 
-      if (
-        (!setup.collisionFishSand || this.fish.pixiObj.direction.y == -1) &&
-        setup.isUnderWater &&
-        setup.checkIsUnderWater
-      ) {
+      // console.log(setup.background.landGenerator.landmasses);
+      let moveOffsetXLeft = true;
+      let moveOffsetXRight = true;
+      let moveOffsetYTop = true;
+      let moveOffsetYBottom = true;
+
+      setup.background.landGenerator.landmasses.forEach(landmass => {
+        const relPosition = {
+          x: landmass.position.x - setup.offset.x,
+          y: landmass.position.y - setup.offset.y
+        };
+        const distance = setup.getDistanceBetweenPoints(
+          this.fish.pixiObj.position,
+          relPosition
+        );
+        const collided = setup.getCollision(this.fish.pixiObj, landmass);
+        if (collided) {
+          const collidingSides = setup.getCollidingSides(
+            this.fish.pixiObj,
+            landmass
+          );
+          if (collidingSides.top) {
+            moveOffsetYTop = false;
+          }
+          if (collidingSides.bottom) {
+            moveOffsetYBottom = false;
+          }
+          if (collidingSides.left) {
+            moveOffsetXLeft = false;
+          }
+          if (collidingSides.right) {
+            moveOffsetXRight = false;
+          }
+        }
+      });
+
+      if (this.fish.pixiObj.direction.x == -1 && moveOffsetXRight) {
+        setup.offset.x +=
+          this.fish.pixiObj.speedsRel.x * delta * this.fish.pixiObj.direction.x;
+        setup.environment.position.x = setup.offset.x * -1;
+      }
+
+      if (this.fish.pixiObj.direction.x == 1 && moveOffsetXLeft) {
+        setup.offset.x +=
+          this.fish.pixiObj.speedsRel.x * delta * this.fish.pixiObj.direction.x;
+        setup.environment.position.x = setup.offset.x * -1;
+      }
+
+      if (this.fish.pixiObj.direction.y == -1 && moveOffsetYBottom) {
+        setup.offset.y +=
+          this.fish.pixiObj.speedsRel.y * delta * this.fish.pixiObj.direction.y;
+        setup.environment.position.y = setup.offset.y * -1;
+      }
+
+      if (this.fish.pixiObj.direction.y == 1 && moveOffsetYTop) {
         setup.offset.y +=
           this.fish.pixiObj.speedsRel.y * delta * this.fish.pixiObj.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
@@ -329,10 +441,6 @@ document.addEventListener("DOMContentLoaded", function() {
           setup.checkIsUnderWater = true;
         }, 200);
       }
-
-      setup.offset.x +=
-        this.fish.pixiObj.speedsRel.x * delta * this.fish.pixiObj.direction.x;
-      setup.environment.position.x = setup.offset.x * -1;
 
       setup.background.waterSurface.tilePosition.x +=
         delta * Math.random() * 10;
@@ -360,6 +468,7 @@ document.addEventListener("DOMContentLoaded", function() {
         -1;
 
       // jump to other side of stage if reached limit
+      // should not happen if pillars are in place
       if (
         setup.offset.x >
         setup.stageWidthHalf + setup.renderer.screen.width / 2
