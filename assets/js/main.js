@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 15000,
+    stageWidthHalf: 5000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       });
 
-      const targets = bloodworms.concat(fishes);
+      const targets = bloodworms.concat(fishes).concat(foodGenerator.sharks);
 
       targets.forEach((target, targetKey) => {
         const hit = setup.getCollision(this.fish.jaw, target.pixiObj);
@@ -235,17 +235,28 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("bubble", "./dist/img/environment/bubble.png")
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
+        .add("island", "./dist/img/environment/land/island.svg")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
+        // fish 1
         .add("fishTargetAfter", "./dist/img/fish/enemy/1/after.svg")
         .add("fishTargetBody", "./dist/img/fish/enemy/1/body.svg")
         .add("fishTargetCaudal", "./dist/img/fish/enemy/1/caudal.svg")
         .add("fishTargetDorsal", "./dist/img/fish/enemy/1/dorsal.svg")
         .add("fishTargetJaw", "./dist/img/fish/enemy/1/jaw.png")
         .add("fishTargetPelvic", "./dist/img/fish/enemy/1/pelvic.svg")
+        //fish 2
         .add("fishTargetBody2", "./dist/img/fish/enemy/2/body.svg")
         .add("fishTargetJaw2", "./dist/img/fish/enemy/2/jaw.png")
+        // shark
+        .add("sharkBody", "./dist/img/fish/enemy/shark/body.png")
+        .add("sharkDorsal", "./dist/img/fish/enemy/shark/dorsal.svg")
+        .add("sharkAfter", "./dist/img/fish/enemy/shark/after.svg")
+        .add("sharkJaw", "./dist/img/fish/enemy/shark/jaw.png")
+        .add("sharkPelvicLeft", "./dist/img/fish/enemy/shark/pelvicLeft.svg")
+        .add("sharkPelvicRight", "./dist/img/fish/enemy/shark/pelvicRight.png")
+        .add("sharkCaudal", "./dist/img/fish/enemy/shark/caudal.png")
         // UI
         .add("statsBarLabel", "./dist/img/ui/statsBar/label.png")
         .add("statsBarBody", "./dist/img/ui/statsBar/body.png")
@@ -266,6 +277,9 @@ document.addEventListener("DOMContentLoaded", function() {
         this.updateFpsText();
       }
 
+      if (this.fish.stats.health <= 0) {
+        console.log("YOU DEAD");
+      }
       this.fish.render();
 
       // if fish is hitting ground
@@ -346,10 +360,15 @@ document.addEventListener("DOMContentLoaded", function() {
         -1;
 
       // jump to other side of stage if reached limit
-      const limit = 15000;
-      if (setup.offset.x > limit + setup.renderer.screen.width) {
+      if (
+        setup.offset.x >
+        setup.stageWidthHalf + setup.renderer.screen.width / 2
+      ) {
         setup.offset.x *= -1;
-      } else if (setup.offset.x < -limit - setup.renderer.screen.width) {
+      } else if (
+        setup.offset.x <
+        -setup.stageWidthHalf - setup.renderer.screen.width / 2
+      ) {
         setup.offset.x *= -1;
       }
 

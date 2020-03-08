@@ -9,6 +9,8 @@ class Fish {
     this.pixiObj.scale.set(0.15);
     this.distance = 5;
     this.relDistance = 5;
+    this.hiddenInPlants = false;
+    this.bloodFactor = 3;
     const levels = {
       1: {
         relXp: 4,
@@ -16,7 +18,9 @@ class Fish {
           x: 4,
           y: 4
         },
-        attack: 4
+        attack: 4,
+        maxHealth: 20,
+        health: 20
       },
       2: {
         relXp: 6,
@@ -24,7 +28,9 @@ class Fish {
           x: 6,
           y: 6
         },
-        attack: 5
+        attack: 5,
+        maxHealth: 30,
+        health: 30
       },
       3: {
         relXp: 8,
@@ -32,7 +38,9 @@ class Fish {
           x: 8,
           y: 8
         },
-        attack: 6
+        attack: 6,
+        maxHealth: 40,
+        health: 40
       },
       4: {
         relXp: 10,
@@ -40,7 +48,9 @@ class Fish {
           x: 10,
           y: 10
         },
-        attack: 7
+        attack: 7,
+        maxHealth: 50,
+        health: 50
       }
     };
     this.stats = {
@@ -77,6 +87,7 @@ class Fish {
     const body = new PIXI.Sprite(bodyTexture);
     body.anchor.x = 0.5;
     body.anchor.y = 0.5;
+    this.body = body;
     fish.addChildAt(body, 0);
 
     const jaw = this.addFishMainJaw();
@@ -111,6 +122,10 @@ class Fish {
 
     this.bindEvents();
   }
+
+  takeDamage = attacker => {
+    this.stats.health -= attacker.stats.attack;
+  };
 
   getPastLevelsXp = () => {
     let pastLevelsXp = 0;
@@ -559,6 +574,50 @@ class Fish {
     };
     this.jaw = jaw;
     return jaw;
+  };
+
+  addBloodSplatter = () => {
+    console.log("addBloodSplatter");
+
+    const bloodSplatterFrames = [];
+    const bloodSplatterTexture = this.setup.loader.resources["bloodSplatter"]
+      .texture;
+    for (let i = 0; i < 4; i++) {
+      bloodSplatterFrames.push(new PIXI.Rectangle(200 * i, 0, 200, 184));
+    }
+    bloodSplatterTexture.frame = bloodSplatterFrames[0];
+    const bloodSplatterTextures = [];
+    for (let i = 0; i < bloodSplatterFrames.length; i++) {
+      const texture = bloodSplatterTexture.clone();
+      texture.frame = bloodSplatterFrames[i];
+      bloodSplatterTextures.push(texture);
+    }
+
+    const bloodSplatter = new PIXI.AnimatedSprite(bloodSplatterTextures);
+    bloodSplatter.anchor.x = 0.5;
+    bloodSplatter.anchor.y = 0.5;
+    bloodSplatter.angle = Math.random() * 360;
+    bloodSplatter.activeMovement = true;
+    bloodSplatter.first = true;
+    bloodSplatter.tint = 0xe8fbff;
+    const randomFactor = Math.random();
+    bloodSplatter.scale.set(
+      randomFactor * this.bloodFactor + this.bloodFactor / 2
+    );
+
+    bloodSplatter.animationSpeed = 0.3;
+    bloodSplatter.loop = false;
+
+    bloodSplatter.position.x = 0;
+    bloodSplatter.position.y = 0;
+
+    this.pixiObj.addChildAt(bloodSplatter, 5);
+
+    bloodSplatter.onComplete = () => {
+      bloodSplatter.destroy();
+    };
+
+    bloodSplatter.play();
   };
 
   render = () => {

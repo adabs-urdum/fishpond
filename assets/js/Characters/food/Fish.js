@@ -240,22 +240,6 @@ class Fish extends Target {
     this.setSpriteDirection((angleDeg * 180) / Math.PI);
   };
 
-  setSpriteDirection = angleDeg => {
-    if (angleDeg >= 90 && angleDeg <= 180) {
-      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
-    } else if (angleDeg <= 90 && angleDeg >= 0) {
-      if (this.pixiObj.scale.y < 0) {
-        this.pixiObj.scale.y *= -1;
-      }
-    } else if (angleDeg >= -90 && angleDeg <= 0) {
-      if (this.pixiObj.scale.y < 0) {
-        this.pixiObj.scale.y *= -1;
-      }
-    } else if (angleDeg <= -90) {
-      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
-    }
-  };
-
   setFishSpeed = e => {
     const p1 = { x: this.pixiObj.x, y: this.pixiObj.y };
     const p2 = { x: e.clientX, y: e.clientY };
@@ -324,7 +308,6 @@ class Fish extends Target {
   };
 
   addPelvic = () => {
-    // load small animation
     const pelvicFrames = [];
     const pelvicTexture = this.setup.loader.resources["fishTargetPelvic"]
       .texture;

@@ -4,6 +4,7 @@ class Target {
   constructor(setup) {
     this.setup = setup;
     this.tint = 0xffffff;
+    this.bloodFactor = 0.4;
     // this.setup.debugLog("new Target");
 
     this.stats = {
@@ -24,6 +25,25 @@ class Target {
 
   takeDamage = attacker => {
     this.stats.health -= attacker.stats.attack;
+    this.afterTakeDamage();
+  };
+
+  afterTakeDamage = () => {};
+
+  setSpriteDirection = angleDeg => {
+    if (angleDeg >= 90 && angleDeg <= 180) {
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
+    } else if (angleDeg <= 90 && angleDeg >= 0) {
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
+      }
+    } else if (angleDeg >= -90 && angleDeg <= 0) {
+      if (this.pixiObj.scale.y < 0) {
+        this.pixiObj.scale.y *= -1;
+      }
+    } else if (angleDeg <= -90) {
+      this.pixiObj.scale.y = Math.abs(this.pixiObj.scale.y) * -1;
+    }
   };
 
   dieSimple = () => {
@@ -61,7 +81,9 @@ class Target {
     bloodSplatter.first = true;
     bloodSplatter.tint = 0xe8fbff;
     const randomFactor = Math.random();
-    bloodSplatter.scale.set(randomFactor * 0.4 + 0.2);
+    bloodSplatter.scale.set(
+      randomFactor * this.bloodFactor + this.bloodFactor / 2
+    );
 
     bloodSplatter.animationSpeed = 0.3;
     bloodSplatter.loop = false;

@@ -29,6 +29,9 @@ class LifeBar extends StatsBar {
   }
 
   getCurrent = () => {
+    if (this.setup.fish.stats.health <= 0) {
+      this.setup.fish.stats.health = 0;
+    }
     return (this.current = this.setup.fish.stats.health);
   };
 }

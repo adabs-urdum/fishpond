@@ -107,9 +107,6 @@ class Background {
     );
     this.clouds1.y = window.innerHeight - this.clouds1.height;
     this.clouds1.tint = tint;
-    const blurFilterClouds1 = new PIXI.filters.BlurFilter();
-    this.clouds1.filters = [blurFilterClouds1];
-    blurFilterClouds1.blur = 1;
     this.setup.environment.addChildAt(this.clouds1, zIndex);
     zIndex += 1;
 

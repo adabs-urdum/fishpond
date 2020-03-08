@@ -30,7 +30,7 @@ class FishSchool {
 
   setNewPos = () => {
     this.newPos = this.setup.getNewRandomPos({
-      x: this.setup.renderer.screen.width * 1.5,
+      x: this.setup.renderer.screen.width * 1.25,
       y: this.setup.renderer.screen.height / 4
     });
     this.newPos.y *= -1;

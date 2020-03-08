@@ -41,8 +41,10 @@ class xpBar extends StatsBar {
         pastLevelsXp += currentLevel.relXp;
       });
 
-    const relCurrentXp = this.setup.fish.stats.xp - pastLevelsXp;
-
+    let relCurrentXp = this.setup.fish.stats.xp - pastLevelsXp;
+    if (relCurrentXp > this.max) {
+      relCurrentXp = this.max;
+    }
     return (this.current = relCurrentXp);
   };
 }

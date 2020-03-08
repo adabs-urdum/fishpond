@@ -111,12 +111,14 @@ class FernGenerator {
   };
 
   render(delta) {
+    let fishFernCollidedCount = 0;
     this.ferns.map(fern => {
       const fishFernCollided = this.setup.getCollision(
         this.setup.fish.pixiObj,
         fern
       );
       if (fishFernCollided) {
+        fishFernCollidedCount += 1;
         fern.children.map(petal => {
           const fishPetalCollided = this.setup.getCollision(
             this.setup.fish.pixiObj,
@@ -132,6 +134,11 @@ class FernGenerator {
         });
       }
     });
+    if (fishFernCollidedCount > 0) {
+      this.setup.fish.hiddenInPlants = true;
+    } else {
+      this.setup.fish.hiddenInPlants = false;
+    }
   }
 }
 

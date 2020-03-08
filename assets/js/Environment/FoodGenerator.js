@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import BloodWorm from "./../Characters/food/Bloodworm.js";
 import Fish from "./../Characters/food/Fish.js";
 import FishSchool from "./../Characters/food/FishSchool.js";
+import Shark from "../Characters/Shark.js";
 
 class FoodGenerator {
   constructor(setup) {
@@ -22,6 +23,12 @@ class FoodGenerator {
       const jaw = factor ? "fishTargetJaw" : "fishTargetJaw2";
 
       this.addSchool(body, jaw);
+    }
+
+    this.sharks = [];
+    for (let i = 0; i < 2; i++) {
+      const shark = new Shark(this.setup);
+      this.sharks.push(shark);
     }
   }
 
@@ -62,6 +69,18 @@ class FoodGenerator {
         this.schools.splice(schoolKey, 1);
       }
     });
+
+    this.sharks.forEach((shark, sharkKey) => {
+      const alive = shark.render(delta);
+      if (!alive) {
+        this.sharks.splice(sharkKey, 1);
+      }
+    });
+
+    if (this.sharks.length < 1) {
+      const shark = new Shark(this.setup);
+      this.sharks.push(shark);
+    }
   };
 }
 
