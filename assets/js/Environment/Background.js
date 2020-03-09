@@ -164,11 +164,8 @@ class Background {
   };
 
   addUiContainer = () => {
-    this.setup.uiContainer = new PIXI.Container();
-    this.setup.environment.addChildAt(this.setup.uiContainer, 12);
-    this.setup.uiContainer.x = 0;
-    this.setup.uiContainer.y = 0;
     this.uiGenerator = new UiGenerator(this.setup);
+    this.setup.environment.addChildAt(this.uiGenerator.pixiObj, 12);
     this.zIndex += 1;
   };
 

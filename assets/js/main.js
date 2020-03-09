@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fern", "./dist/img/environment/fern.png")
         .add("splash", "./dist/img/environment/splash.png")
         .add("island", "./dist/img/environment/land/island.svg")
-        .add("pillar", "./dist/img/environment/land/pillar.svg")
+        .add("pillar", "./dist/img/environment/land/pillar.png")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")

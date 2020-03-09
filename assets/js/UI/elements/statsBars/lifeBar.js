@@ -18,14 +18,16 @@ class LifeBar extends StatsBar {
         y: this.setup.vh * 15
       },
       body: {
-        x: this.setup.vh * 2,
+        x: this.setup.vh * 10,
         y: this.setup.vh * 17.5
       },
       bar: {
-        x: this.setup.vh * 4.4,
-        y: this.setup.vh * 21.5
+        x: this.setup.vh * 11.15,
+        y: this.setup.vh * 0
       }
     };
+    this.pixiObj.position.x = this.setup.vh * 2.5;
+    this.pixiObj.position.y = this.setup.vh * 10;
   }
 
   getCurrent = () => {

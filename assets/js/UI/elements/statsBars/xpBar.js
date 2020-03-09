@@ -17,14 +17,16 @@ class xpBar extends StatsBar {
         y: this.setup.vh * 1
       },
       body: {
-        x: this.setup.vh * 2,
+        x: this.setup.vh * 10,
         y: this.setup.vh * 3.5
       },
       bar: {
-        x: this.setup.vh * 4.4,
+        x: this.setup.vh * 11,
         y: this.setup.vh * 7.5
       }
     };
+    this.pixiObj.position.x = this.setup.vh * 2.5;
+    this.pixiObj.position.y = this.setup.vh * 2.5;
   }
 
   getCurrent = () => {

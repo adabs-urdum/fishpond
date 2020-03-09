@@ -4,6 +4,11 @@ class StatsBar {
   constructor(setup) {
     this.setup = setup;
     this.setup.debugLog("new StatsBar");
+    this.pixiObj = new PIXI.Container();
+    this.offset = {
+      x: 0,
+      y: 0
+    };
 
     this.statsBarBarOffset = 23;
 
@@ -20,7 +25,7 @@ class StatsBar {
     statsBarBody.tint = this.color;
     statsBarBody.scale.set(scaleFactor);
     this.statsBarBody = statsBarBody;
-    this.setup.uiContainer.addChild(statsBarBody);
+    this.pixiObj.addChild(statsBarBody);
     this.statsBarBody = statsBarBody;
 
     const statsBarBarTexture = this.setup.loader.resources[
@@ -32,7 +37,7 @@ class StatsBar {
     statsBarBar.originalWidth = statsBarBar.width;
     statsBarBar.anchor.y = 0.5;
     this.statsBarBar = statsBarBar;
-    this.setup.uiContainer.addChild(statsBarBar);
+    this.pixiObj.addChild(statsBarBar);
     this.statsBarBar = statsBarBar;
 
     const statsBarLabelTexture = this.setup.loader.resources[
@@ -42,7 +47,7 @@ class StatsBar {
     statsBarLabel.tint = this.color;
     statsBarLabel.scale.set(scaleFactor);
     this.statsBarLabel = statsBarLabel;
-    this.setup.uiContainer.addChild(statsBarLabel);
+    this.pixiObj.addChild(statsBarLabel);
     this.statsBarLabel = statsBarLabel;
   };
 
@@ -51,18 +56,17 @@ class StatsBar {
   };
 
   render = delta => {
-    this.statsBarLabel.position.x =
-      this.setup.offset.x + this.setup.BS * this.positions.label.x;
-    this.statsBarLabel.position.y =
-      this.setup.offset.y + this.setup.BS * this.positions.label.y;
+    this.statsBarLabel.position.x = 0;
+    this.statsBarLabel.position.y = 0;
+
     this.statsBarBody.position.x =
-      this.setup.offset.x + this.setup.BS * this.positions.body.x;
-    this.statsBarBody.position.y =
-      this.setup.offset.y + this.setup.BS * this.positions.body.y;
+      this.statsBarLabel.position.x + this.setup.vh * 1.3;
+    this.statsBarBody.position.y = this.setup.vh * 1.4;
+
     this.statsBarBar.position.x =
-      this.setup.offset.x + this.setup.BS * this.positions.bar.x;
+      this.statsBarBody.position.x + this.setup.vh * 1.2;
     this.statsBarBar.position.y =
-      this.setup.offset.y + this.setup.BS * this.positions.bar.y;
+      this.statsBarBody.position.y + this.setup.vh * 2.17;
 
     this.current = this.getCurrent();
 

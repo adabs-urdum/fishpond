@@ -21,7 +21,7 @@ class LandGenerator {
   addPillarLeft = () => {
     const texture = this.setup.loader.resources["pillar"].texture.clone();
     const pillarLeft = new PIXI.Sprite(texture);
-    pillarLeft.scale.set(0.53);
+    pillarLeft.scale.set(this.setup.vh * 0.074);
     pillarLeft.anchor.x = 0.8;
     pillarLeft.anchor.y = 0.1;
     pillarLeft.position.x = this.setup.stageWidthHalf * -1;
@@ -35,8 +35,7 @@ class LandGenerator {
   addPillarRight = () => {
     const texture = this.setup.loader.resources["pillar"].texture.clone();
     const pillarRight = new PIXI.Sprite(texture);
-    pillarRight.scale.set(0.53);
-    pillarRight.scale.x *= -1;
+    pillarRight.scale.set(this.setup.vh * 0.0625);
     pillarRight.anchor.x = 0.2;
     pillarRight.anchor.y = 0.1;
     pillarRight.position.x = this.setup.stageWidthHalf + pillarRight.width * 2;
