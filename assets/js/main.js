@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 1000,
+    stageWidthHalf: 15000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -344,12 +344,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       this.fish.render();
 
-      // if fish is hitting ground
-      setup.collisionFishSand = setup.getCollision(
-        setup.background.sand,
-        this.fish.pixiObj
-      );
-
       // if fish is under water
       if (setup.checkIsUnderWater) {
         setup.isUnderWater = true;
@@ -421,13 +415,29 @@ document.addEventListener("DOMContentLoaded", function() {
         setup.environment.position.x = setup.offset.x * -1;
       }
 
-      if (this.fish.pixiObj.direction.y == -1 && moveOffsetYBottom) {
+      const collisionFishGround = setup.getCollision(
+        setup.fish.pixiObj,
+        setup.background.sand
+      );
+      const collisionFishWatersurface = setup.getCollision(
+        setup.fish.pixiObj,
+        setup.background.waterSurface
+      );
+      if (
+        this.fish.pixiObj.direction.y == -1 &&
+        moveOffsetYBottom &&
+        !collisionFishWatersurface
+      ) {
         setup.offset.y +=
           this.fish.pixiObj.speedsRel.y * delta * this.fish.pixiObj.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
       }
 
-      if (this.fish.pixiObj.direction.y == 1 && moveOffsetYTop) {
+      if (
+        this.fish.pixiObj.direction.y == 1 &&
+        moveOffsetYTop &&
+        !collisionFishGround
+      ) {
         setup.offset.y +=
           this.fish.pixiObj.speedsRel.y * delta * this.fish.pixiObj.direction.y;
         setup.environment.position.y = setup.offset.y * -1;
@@ -442,9 +452,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 200);
       }
 
+      // wave movement
       setup.background.waterSurface.tilePosition.x +=
         delta * Math.random() * 10;
 
+      // background movements
       setup.background.sand.tilePosition.x +=
         this.fish.pixiObj.speedsRel.x *
         delta *
