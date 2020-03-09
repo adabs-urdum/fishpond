@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 15000,
+    stageWidthHalf: 5000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function() {
       let moveOffsetXRight = true;
       let moveOffsetYTop = true;
       let moveOffsetYBottom = true;
+      let collidingSides;
 
       setup.background.landGenerator.landmasses.forEach(landmass => {
         const relPosition = {
@@ -384,10 +385,7 @@ document.addEventListener("DOMContentLoaded", function() {
         );
         const collided = setup.getCollision(this.fish.pixiObj, landmass);
         if (collided) {
-          const collidingSides = setup.getCollidingSides(
-            this.fish.pixiObj,
-            landmass
-          );
+          collidingSides = setup.getCollidingSides(this.fish.pixiObj, landmass);
           if (collidingSides.top) {
             moveOffsetYTop = false;
           }
@@ -456,28 +454,39 @@ document.addEventListener("DOMContentLoaded", function() {
       setup.background.waterSurface.tilePosition.x +=
         delta * Math.random() * 10;
 
-      // background movements
-      setup.background.sand.tilePosition.x +=
-        this.fish.pixiObj.speedsRel.x *
-        delta *
-        this.fish.pixiObj.direction.x *
-        -1;
+      if (setup.isUnderWater) {
+        let runContinue = true;
+        if (collidingSides) {
+          if (collidingSides.left || collidingSides.right) {
+            runContinue = false;
+          }
+        }
 
-      setup.background.clouds1.tilePosition.x +=
-        ((this.fish.pixiObj.speedsRel.x *
-          delta *
-          this.fish.pixiObj.direction.x) /
-          3) *
-        2 *
-        -1;
+        if (runContinue) {
+          // background movements
+          setup.background.sand.tilePosition.x +=
+            this.fish.pixiObj.speedsRel.x *
+            delta *
+            this.fish.pixiObj.direction.x *
+            -1;
 
-      setup.background.clouds2.tilePosition.x +=
-        ((this.fish.pixiObj.speedsRel.x *
-          delta *
-          this.fish.pixiObj.direction.x) /
-          3) *
-        1 *
-        -1;
+          setup.background.clouds1.tilePosition.x +=
+            ((this.fish.pixiObj.speedsRel.x *
+              delta *
+              this.fish.pixiObj.direction.x) /
+              3) *
+            2 *
+            -1;
+
+          setup.background.clouds2.tilePosition.x +=
+            ((this.fish.pixiObj.speedsRel.x *
+              delta *
+              this.fish.pixiObj.direction.x) /
+              3) *
+            1 *
+            -1;
+        }
+      }
 
       // jump to other side of stage if reached limit
       // should not happen if pillars are in place
