@@ -280,6 +280,21 @@ class Shark extends Target {
   };
 
   render = delta => {
+    let allowedToMoveVertically = true;
+    let allowedToMoveHorizontally = true;
+    let collidingSides = {
+      top: false,
+      bottom: false,
+      left: false,
+      right: false
+    };
+    let allowedSwimmingDirections = {
+      up: true,
+      down: true,
+      left: true,
+      right: true
+    };
+
     this.stats.speed = this.setup.fish.stats.levels[
       this.setup.fish.stats.level
     ].maxSpeeds.x;
@@ -333,17 +348,54 @@ class Shark extends Target {
           }
         }
 
+        let collision = false;
         if (distanceFishShark >= 100) {
-          this.pixiObj.position.x +=
-            (this.stats.speed / 100) *
-            95 *
-            Math.cos((angle * Math.PI) / 180) *
-            delta;
-          this.pixiObj.position.y +=
-            (this.stats.speed / 100) *
-            95 *
-            Math.sin((angle * Math.PI) / 180) *
-            delta;
+          const landmasses = this.setup.background.landGenerator.landmasses;
+          landmasses.forEach(landmass => {
+            collision = this.setup.getCollision(this.pixiObj, landmass);
+            if (collision) {
+              collidingSides = this.setup.getCollidingSides(
+                this.pixiObj,
+                landmass
+              );
+            }
+          });
+
+          if (!collision) {
+            this.pixiObj.position.x +=
+              (this.stats.speed / 100) *
+              95 *
+              Math.cos((angle * Math.PI) / 180) *
+              delta;
+          } else if (
+            collision &&
+            ((collidingSides.bottom && angle >= 0) ||
+              (collidingSides.top && angle < 0))
+          ) {
+            this.pixiObj.position.x +=
+              (this.stats.speed / 100) *
+              95 *
+              Math.cos((angle * Math.PI) / 180) *
+              delta;
+          }
+          if (!collision) {
+            this.pixiObj.position.y +=
+              (this.stats.speed / 100) *
+              95 *
+              Math.sin((angle * Math.PI) / 180) *
+              delta;
+          } else if (
+            (collision &&
+              collidingSides.right &&
+              (angle <= 90 || angle >= -90)) ||
+            (collidingSides.left && (angle > 90 || angle < -90))
+          ) {
+            this.pixiObj.position.y +=
+              (this.stats.speed / 100) *
+              95 *
+              Math.sin((angle * Math.PI) / 180) *
+              delta;
+          }
         }
       } else {
         // this.pixiObj.position.x += (this.stats.speed / 2) * delta;
