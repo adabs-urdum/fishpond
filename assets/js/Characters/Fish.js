@@ -118,9 +118,28 @@ class Fish {
   }
 
   takeDamage = attacker => {
-    this.body.play();
-
     this.stats.health -= attacker.stats.attack;
+    this.stats.health = this.stats.health <= 0 ? 0 : this.stats.health;
+
+    let newFrame;
+    if (this.stats.health > 0) {
+      newFrame =
+        this.bodyTextures.length -
+        Math.ceil(
+          (this.bodyTextures.length / this.stats.maxHealth) * this.stats.health
+        );
+      if (newFrame == this.bodyTextures.length - 1) {
+        newFrame = this.bodyTextures.length - 2;
+      }
+    } else {
+      newFrame = this.bodyTextures.length - 1;
+      this.die();
+    }
+    this.body.gotoAndStop(newFrame);
+  };
+
+  die = () => {
+    console.log("YOU DEAD");
   };
 
   getPastLevelsXp = () => {
@@ -610,8 +629,6 @@ class Fish {
   };
 
   addBloodSplatter = () => {
-    console.log("addBloodSplatter");
-
     const bloodSplatterFrames = [];
     const bloodSplatterTexture = this.setup.loader.resources["bloodSplatter"]
       .texture;

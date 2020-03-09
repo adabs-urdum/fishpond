@@ -340,9 +340,6 @@ document.addEventListener("DOMContentLoaded", function() {
         this.updateFpsText();
       }
 
-      if (this.fish.stats.health <= 0) {
-        console.log("YOU DEAD");
-      }
       this.fish.render();
 
       // if fish is under water
