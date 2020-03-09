@@ -81,14 +81,8 @@ class Fish {
       y: 0
     };
 
-    const bodyTexture = this.setup.loader.resources[
-      "fishMainBody"
-    ].texture.clone();
-    const body = new PIXI.Sprite(bodyTexture);
-    body.anchor.x = 0.5;
-    body.anchor.y = 0.5;
-    this.body = body;
-    fish.addChildAt(body, 0);
+    this.addBody();
+    fish.addChildAt(this.body, 0);
 
     const jaw = this.addFishMainJaw();
     fish.addChildAt(jaw, 1);
@@ -124,6 +118,8 @@ class Fish {
   }
 
   takeDamage = attacker => {
+    this.body.play();
+
     this.stats.health -= attacker.stats.attack;
   };
 
@@ -272,6 +268,43 @@ class Fish {
         (this.stats.levels[this.stats.level].maxSpeeds.y / 100) *
         this.pixiObj.speeds.y
     };
+  };
+
+  addBody = () => {
+    const bodyFrames = [];
+    const bodyTexture = this.setup.loader.resources["fishMainBody"].texture;
+    for (let i = 0; i < 9; i++) {
+      bodyFrames.push(new PIXI.Rectangle(0, 387 * i, 703, 387));
+    }
+    bodyTexture.frame = bodyFrames[0];
+    this.bodyTextures = [];
+    for (let i = 0; i < bodyFrames.length; i++) {
+      const texture = bodyTexture.clone();
+      texture.frame = bodyFrames[i];
+      this.bodyTextures.push(texture);
+    }
+
+    const body = new PIXI.AnimatedSprite(this.bodyTextures);
+    body.animationSpeed = 1;
+    body.onFrameChange = () => {
+      body.stop();
+    };
+    body.first = true;
+    body.anchor.x = 0.5;
+    body.anchor.y = 0.5;
+    this.body = body;
+  };
+
+  addFishbone = () => {
+    const fishnoneTexture = this.setup.loader.resources[
+      "mainFishbone"
+    ].texture.clone();
+    const fishbone = new PIXI.Sprite(fishnoneTexture);
+    fishbone.anchor.x = 0.5;
+    fishbone.anchor.y = 0.5;
+    fishbone.scale.set(0.9);
+    this.fishbone = fishbone;
+    return fishbone;
   };
 
   addAfter = () => {

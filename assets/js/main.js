@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 5000,
+    stageWidthHalf: 1000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -281,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function() {
           "mainJawMediumSmall",
           "./dist/img/fish/main/mainJawMediumSmall.png"
         )
+        .add("mainFishbone", "./dist/img/fish/main/fishbone.png")
         .add(
           "mainJawMediumLarge",
           "./dist/img/fish/main/mainJawMediumLarge.png"
