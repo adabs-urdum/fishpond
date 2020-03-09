@@ -290,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("fishMainDorsalFin", "./dist/img/fish/main/dorsalFin.svg")
         .add("fishMainAfterFin", "./dist/img/fish/main/afterFin.svg")
         // environment
-        .add("backgroundSand", "./dist/img/background/sand.png")
+        .add("backgroundSand", "./dist/img/background/sand.svg")
         .add("backgroundClouds_1", "./dist/img/background/bgClouds_1.png")
         .add("backgroundClouds_2", "./dist/img/background/bgClouds_2.png")
         .add("waterSurface", "./dist/img/background/waterSurface.png")
@@ -299,6 +299,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("splash", "./dist/img/environment/splash.png")
         .add("island", "./dist/img/environment/land/island.svg")
         .add("pillar", "./dist/img/environment/land/pillar.png")
+        .add("boulder", "./dist/img/environment/land/boulder.svg")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")

@@ -82,6 +82,9 @@ class Background {
     this.sea2.y = 0 - this.setup.renderer.screen.height;
     this.setup.environment.addChildAt(this.sea2, this.zIndex);
     this.zIndex += 1;
+
+    this.setup.sea = this.sea;
+    this.setup.sea2 = this.sea2;
   };
 
   addClouds2 = () => {
@@ -171,7 +174,7 @@ class Background {
 
   addBelowGround = () => {
     this.belowGround = new PIXI.Graphics();
-    this.belowGround.beginFill("0xffe0a4");
+    this.belowGround.beginFill("0xD4BD63");
     this.belowGround.drawRect(
       0,
       this.setup.renderer.screen.height,
@@ -180,6 +183,8 @@ class Background {
     );
     this.belowGround.endFill();
     this.belowGround.tint = this.tint;
+    this.belowGround.position.y = -10;
+    this.belowGround.tint = 0xe8fbff;
     this.setup.environment.addChildAt(this.belowGround, this.zIndex);
     this.zIndex += 1;
   };
