@@ -53,26 +53,22 @@ class LandGenerator {
   };
 
   addBoulder = () => {
-    const texture = this.setup.loader.resources["boulder"].texture.clone();
+    const boulderTextureNames = ["boulder", "boulder2", "boulder3"];
+    const texture = this.setup.loader.resources[
+      boulderTextureNames.getRandomValue(boulderTextureNames)
+    ].texture.clone();
     const boulder = new PIXI.Sprite(texture);
-    boulder.scale.set(this.setup.vh * 0.074);
     boulder.anchor.x = 0;
     boulder.anchor.y = 0;
     boulder.tint = this.tint;
     boulder.position.x = this.getRandomPositionX();
     boulder.position.y = this.getRandomPositionY();
-    // console.log(boulder.position.x);
-    // console.log(boulder.position.y);
-    // console.log("-----------");
 
     let freeSpace = false;
     while (!freeSpace) {
       this.landmasses.forEach(landmass => {
         const collision = this.setup.getCollision(landmass, boulder);
-        console.log(collision);
         if (collision) {
-          console.log("redialing");
-
           boulder.position.x = this.getRandomPositionX();
           boulder.position.y = this.getRandomPositionY();
         } else {
@@ -80,6 +76,10 @@ class LandGenerator {
         }
       });
     }
+
+    boulder.scale.set(
+      Math.random() * 0.5 * this.setup.BS + 0.4 * this.setup.BS
+    );
 
     this.landContainer.addChildAt(boulder, this.zIndex);
     this.zIndex += 1;

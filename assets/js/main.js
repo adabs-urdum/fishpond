@@ -300,6 +300,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("island", "./dist/img/environment/land/island.svg")
         .add("pillar", "./dist/img/environment/land/pillar.png")
         .add("boulder", "./dist/img/environment/land/boulder.svg")
+        .add("boulder2", "./dist/img/environment/land/boulder2.svg")
+        .add("boulder3", "./dist/img/environment/land/boulder3.png")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
