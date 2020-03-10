@@ -14,7 +14,7 @@ class Fish {
     this.bloodFactor = 3;
     const levels = {
       1: {
-        relXp: 4,
+        relXp: 8,
         maxSpeeds: {
           x: 4,
           y: 4
@@ -24,7 +24,7 @@ class Fish {
         health: 20
       },
       2: {
-        relXp: 6,
+        relXp: 16,
         maxSpeeds: {
           x: 6,
           y: 6
@@ -34,7 +34,7 @@ class Fish {
         health: 30
       },
       3: {
-        relXp: 8,
+        relXp: 32,
         maxSpeeds: {
           x: 8,
           y: 8
@@ -44,7 +44,7 @@ class Fish {
         health: 40
       },
       4: {
-        relXp: 10,
+        relXp: 64,
         maxSpeeds: {
           x: 10,
           y: 10

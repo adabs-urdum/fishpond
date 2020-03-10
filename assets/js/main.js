@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const debug = true;
   const setup = {
     debug: debug,
-    offset: { x: 1, y: 1 },
+    offset: { x: 1, y: window.innerHeight / 4 },
     fontFamily: fontFamily,
     gameStarted: false,
     stageWidthHalf: 3000,
@@ -437,11 +437,11 @@ document.addEventListener("DOMContentLoaded", function() {
       }
 
       const collisionFishGround = setup.getCollision(
-        setup.fish.pixiObj,
+        setup.fish.body,
         setup.background.sand
       );
       const collisionFishWatersurface = setup.getCollision(
-        setup.fish.pixiObj,
+        setup.fish.body,
         setup.background.waterSurface
       );
       if (

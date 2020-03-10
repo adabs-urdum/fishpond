@@ -93,7 +93,7 @@ class FernGenerator {
 
   returnPetalRotation = petal => {
     const fishPetalCollided = this.setup.getCollision(
-      this.setup.fish.pixiObj,
+      this.setup.fish.body,
       petal
     );
 
@@ -114,14 +114,14 @@ class FernGenerator {
     let fishFernCollidedCount = 0;
     this.ferns.map(fern => {
       const fishFernCollided = this.setup.getCollision(
-        this.setup.fish.pixiObj,
+        this.setup.fish.body,
         fern
       );
       if (fishFernCollided) {
         fishFernCollidedCount += 1;
         fern.children.map(petal => {
           const fishPetalCollided = this.setup.getCollision(
-            this.setup.fish.pixiObj,
+            this.setup.fish.body,
             petal
           );
           if (fishPetalCollided) {
