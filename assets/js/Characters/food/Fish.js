@@ -156,10 +156,6 @@ class Fish extends Target {
     }
   };
 
-  takeDamage = attacker => {
-    this.stats.health -= attacker.stats.attack;
-  };
-
   getPastLevelsXp = () => {
     let pastLevelsXp = 0;
     const pastLevels = Object.keys(this.stats.levels)

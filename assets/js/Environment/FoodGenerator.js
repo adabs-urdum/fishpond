@@ -26,7 +26,7 @@ class FoodGenerator {
     }
 
     this.sharks = [];
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 2; i++) {
       const shark = new Shark(this.setup);
       this.sharks.push(shark);
     }

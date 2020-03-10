@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
     offset: { x: 1, y: 1 },
     fontFamily: fontFamily,
     gameStarted: false,
-    stageWidthHalf: 1000,
+    stageWidthHalf: 3000,
     vmin:
       window.innerWidth > window.innerHeight
         ? window.innerHeight / 100
@@ -183,10 +183,30 @@ document.addEventListener("DOMContentLoaded", function() {
     bindEvents = () => {
       window.addEventListener("resize", this.onResize);
       window.addEventListener("click", this.bite);
+      window.addEventListener("keypress", this.fullscreen);
+    };
+
+    fullscreen = e => {
+      if (e.code == "KeyF") {
+        console.log(e);
+        const ele = document.documentElement;
+        if (ele.requestFullscreen) {
+          ele.requestFullscreen();
+        } else if (ele.webkitRequestFullscreen) {
+          ele.webkitRequestFullscreen();
+        } else if (ele.mozRequestFullScreen) {
+          ele.mozRequestFullScreen();
+        } else if (ele.msRequestFullscreen) {
+          ele.msRequestFullscreen();
+        } else {
+          console.log("Fullscreen API is not supported.");
+        }
+      }
     };
 
     onResize = () => {
       setup.debugLog("triggered onResize");
+      setup.renderer.resize(window.innerWidth, window.innerHeight);
     };
 
     bite = e => {
@@ -302,6 +322,8 @@ document.addEventListener("DOMContentLoaded", function() {
         .add("boulder", "./dist/img/environment/land/boulder.svg")
         .add("boulder2", "./dist/img/environment/land/boulder2.svg")
         .add("boulder3", "./dist/img/environment/land/boulder3.png")
+        // filters
+        .add("displacement", "./dist/img/filters/displacement.png")
         // targets
         .add("bloodworm", "./dist/img/food/bloodworm.svg")
         .add("bloodSplatter", "./dist/img/food/bloodSplatter.png")
@@ -384,9 +406,9 @@ document.addEventListener("DOMContentLoaded", function() {
           this.fish.pixiObj.position,
           relPosition
         );
-        const collided = setup.getCollision(this.fish.pixiObj, landmass);
+        const collided = setup.getCollision(this.fish.body, landmass);
         if (collided) {
-          collidingSides = setup.getCollidingSides(this.fish.pixiObj, landmass);
+          collidingSides = setup.getCollidingSides(this.fish.body, landmass);
           if (collidingSides.top) {
             moveOffsetYTop = false;
           }

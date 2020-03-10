@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { GlowFilter } from "pixi-filters";
 
 class Fish {
   constructor(setup) {
@@ -123,6 +124,17 @@ class Fish {
 
     let newFrame;
     if (this.stats.health > 0) {
+      this.pixiObj.filters = [
+        new GlowFilter({
+          distance: 10,
+          outerStrength: 1.5,
+          innerStrength: 0,
+          color: 0xff0000
+        })
+      ];
+      setTimeout(() => {
+        this.pixiObj.filters = [];
+      }, 100);
       newFrame =
         this.bodyTextures.length -
         Math.ceil(
@@ -139,6 +151,15 @@ class Fish {
   };
 
   die = () => {
+    this.pixiObj.filters = [
+      new GlowFilter({
+        distance: 10,
+        outerStrength: 1.5,
+        innerStrength: 0,
+        color: 0xff0000
+      })
+    ];
+
     console.log("YOU DEAD");
   };
 
@@ -163,27 +184,39 @@ class Fish {
   };
 
   levelUp = () => {
+    this.pixiObj.filters = [
+      new GlowFilter({
+        distance: 20,
+        outerStrength: 1.5,
+        innerStrength: 0,
+        color: 0xffdd63
+      })
+    ];
     this.stats.level += 1;
     this.stats.attack = this.stats.levels[this.stats.level].attack;
 
-    const caudalTextures = this.caudalTextures[this.stats.level - 1];
-    this.caudal.texture = caudalTextures[0];
-    this.caudal.textures = caudalTextures;
-    this.caudal.play();
+    setTimeout(() => {
+      this.pixiObj.filters = [];
 
-    const pelvicTextures = this.pelvicTextures[this.stats.level - 1];
-    this.pelvic.texture = pelvicTextures[0];
-    this.pelvic.textures = pelvicTextures;
-    this.pelvic.play();
+      const caudalTextures = this.caudalTextures[this.stats.level - 1];
+      this.caudal.texture = caudalTextures[0];
+      this.caudal.textures = caudalTextures;
+      this.caudal.play();
 
-    const jawTextures = this.jawTextures[this.stats.level - 1];
-    this.jaw.texture = jawTextures[0];
-    this.jaw.textures = jawTextures;
+      const pelvicTextures = this.pelvicTextures[this.stats.level - 1];
+      this.pelvic.texture = pelvicTextures[0];
+      this.pelvic.textures = pelvicTextures;
+      this.pelvic.play();
 
-    this.setBodyPartPositions();
+      const jawTextures = this.jawTextures[this.stats.level - 1];
+      this.jaw.texture = jawTextures[0];
+      this.jaw.textures = jawTextures;
 
-    this.pixiObj.scale.x *= 1.05;
-    this.pixiObj.scale.y *= 1.05;
+      this.setBodyPartPositions();
+
+      this.pixiObj.scale.x *= 1.07;
+      this.pixiObj.scale.y *= 1.07;
+    }, 700);
 
     this.setup.debugLog("LEVEL UP");
   };

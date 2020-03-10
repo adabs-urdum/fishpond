@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { GlowFilter } from "pixi-filters";
 
 class Target {
   constructor(setup) {
@@ -25,6 +26,17 @@ class Target {
 
   takeDamage = attacker => {
     this.stats.health -= attacker.stats.attack;
+    this.pixiObj.filters = [
+      new GlowFilter({
+        distance: 10,
+        outerStrength: 1.5,
+        innerStrength: 0,
+        color: 0xff0000
+      })
+    ];
+    setTimeout(() => {
+      this.pixiObj.filters = [];
+    }, 100);
     this.afterTakeDamage();
   };
 

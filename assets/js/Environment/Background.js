@@ -4,6 +4,7 @@ import FernGenerator from "./FernGenerator.js";
 import FoodGenerator from "./FoodGenerator.js";
 import UiGenerator from "../UI/UiGenerator.js";
 import LandGenerator from "./LandGenerator.js";
+import { AdvancedBloomFilter } from "pixi-filters";
 
 class Background {
   constructor(setup) {
@@ -11,6 +12,12 @@ class Background {
     this.setup.debugLog("new Background");
     this.zIndex = 0;
     this.tint = 0xe8fbff;
+    this.pixiObj = this.setup.environment;
+    // this.pixiObj.filters = [
+    //   new AdvancedBloomFilter({
+    //     threshold: 0.9999
+    //   })
+    // ];
 
     this.addSky();
     this.addSea();
