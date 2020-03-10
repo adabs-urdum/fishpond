@@ -352,11 +352,11 @@ class Shark extends Target {
         if (distanceFishShark >= 100) {
           const landmasses = this.setup.background.landGenerator.landmasses;
           landmasses.forEach(landmass => {
-            collision = this.setup.getCollision(this.pixiObj, landmass);
+            collision = this.setup.getCollision(this.body, landmass);
             if (collision) {
               collidingSides = this.setup.getCollidingSides(
-                this.pixiObj,
-                landmass
+                landmass,
+                this.body
               );
             }
           });
@@ -367,34 +367,32 @@ class Shark extends Target {
               95 *
               Math.cos((angle * Math.PI) / 180) *
               delta;
-          } else if (
-            collision &&
-            ((collidingSides.bottom && angle >= 0) ||
-              (collidingSides.top && angle < 0))
-          ) {
-            this.pixiObj.position.x +=
-              (this.stats.speed / 100) *
-              95 *
-              Math.cos((angle * Math.PI) / 180) *
-              delta;
-          }
-          if (!collision) {
             this.pixiObj.position.y +=
               (this.stats.speed / 100) *
               95 *
               Math.sin((angle * Math.PI) / 180) *
               delta;
-          } else if (
-            (collision &&
-              collidingSides.right &&
-              (angle <= 90 || angle >= -90)) ||
-            (collidingSides.left && (angle > 90 || angle < -90))
-          ) {
-            this.pixiObj.position.y +=
-              (this.stats.speed / 100) *
-              95 *
-              Math.sin((angle * Math.PI) / 180) *
-              delta;
+          } else {
+            if (
+              (collidingSides.left && (angle <= 20 || angle >= -20)) ||
+              (collidingSides.right && (angle <= 20 || angle >= -20))
+            ) {
+              this.pixiObj.position.x +=
+                (this.stats.speed / 100) *
+                95 *
+                Math.cos((angle * Math.PI) / 180) *
+                delta;
+            }
+            if (
+              (collidingSides.top && (angle <= 180 || angle >= 0)) ||
+              (collidingSides.bottom && (angle <= 0 || angle >= -180))
+            ) {
+              this.pixiObj.position.y +=
+                (this.stats.speed / 100) *
+                95 *
+                Math.sin((angle * Math.PI) / 180) *
+                delta;
+            }
           }
         }
       } else {
